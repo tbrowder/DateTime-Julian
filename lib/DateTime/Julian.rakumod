@@ -1,32 +1,21 @@
-unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER>;
+unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> is DateTime;
+
+has DateTime $.dt;
+has          $.juliandate;
+
+submethod TWEAK {
+    # instantiate the UTC DateTime object from the Julian day number
+    # See J. L. Lawrence, p. 40
+    my $frac = self.juliandate.abs = self.juliandate.Int.abs;
+
+}
+
+method frac($x) {
+    self.frac: $x
+}
+
+sub frac($x) is export(:frac) {
+    $x.abs - $x.Int.abs;
+}
 
 
-=begin pod
-
-=head1 NAME
-
-DateTime::Julian - blah blah blah
-
-=head1 SYNOPSIS
-
-=begin code :lang<raku>
-
-use DateTime::Julian;
-
-=end code
-
-=head1 DESCRIPTION
-
-DateTime::Julian is ...
-
-=head1 AUTHOR
-
-Tom Browder <tbrowder@cpan.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2021 Tom Browder
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end pod
