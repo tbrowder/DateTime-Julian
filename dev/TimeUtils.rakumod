@@ -18,8 +18,8 @@ sub after_gregorian is export(:ALL) {
     my $m   = shift;
     my $d   = shift;
     my %arg = ( gregorian_start => $GREGORIAN_START, @_ );
-    return 0 unless defined $arg{gregorian_start};
-    polynome( 100, $d, $m, $y ) >= $arg{gregorian_start};
+    return 0 unless defined %arg{gregorian_start};
+    polynome( 100, $d, $m, $y ) >= %arg{gregorian_start};
 }
 
 sub cal2jd is export(:ALL) {
@@ -44,7 +44,7 @@ sub jd2cal is export(:ALL) {
     my %arg = ( gregorian => 1, @_ );
 
     my ( $f, $i ) = modf( $jd - $J1900 + 0.5 );
-    if ( $arg{gregorian} && $i > -115860 ) {
+    if ( %arg{gregorian} && $i > -115860 ) {
         my $a = floor( $i / 36524.25 + 9.9835726e-1 ) + 14;
         $i += 1 + $a - floor( $a / 4 );
     }
@@ -121,7 +121,7 @@ sub is_leapyear is export(:ALL) {
     my $yr = shift;
     my %arg = ( gregorian => 1, @_ );
     $yr = int($yr);
-    return $arg{gregorian}
+    return %arg{gregorian}
       ? ( $yr % 4 == 0 ) && ( ( $yr % 100 != 0 ) || ( $yr % 400 == 0 ) )
       : $yr % 4 == 0;
 }
