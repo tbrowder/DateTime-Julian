@@ -1,0 +1,60 @@
+=begin pod
+
+=head1 NAME
+
+DateTime::Julian - Provides routines to use astronomical Julian dates (sometimes called
+I<Julian day numbers>)
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use DateTime::Julian;
+my $jd = nnnn.nnnn; # Julian date for 20
+my $utc = DateTime::Julian.new: :juliandate($jd);
+say $utc.j2000;
+say $utc.jcent;
+my $lon = -86.234; # local observer's latitude;
+# Get the local sidereal time for the UTC at the current Julian date
+my $lst = $utc.lst: :$lon; 
+
+=end code
+
+=head1 DESCRIPTION
+
+DateTime::Julian contains a subclass of a DateTime object that
+is instantiated from a I<Julian date>.  
+
+Following are some pertinent definitions from Wikipedia topic
+I<Julian day>:
+
+=item1 The B<Julian day> is the continous count of the days since 
+the beginning of the Julian period, and is used primarily used
+by astronomers....
+
+=item1 The B<Julian day number> (JDN) is the integer assigned to
+a whole solar day count starting from noon Universal time, with Julian
+day number 0 assigned to the day starting at noon on Monday, January 1, 4713 BC,
+proleptic Julian calendar (November 24, 4714 BC, in the proleptic Gregorian calendar),
+a date at which three multi-year cycles started (which are: indiction, Solar,
+and Lunar cycles) and which preceded any dates in recorded history. For example,
+the Julian day number for the day starting at 12:00 UT (noon) on January 1, 2000,
+was B<2451545>.
+
+=item1 The B<Julian date> (JD) of any instant is the Julian day number plus the fraction 
+of a day since the preceding noon in Universal Time. Julian dates are
+expressed as a Julian day number with a decimal fraction added.
+For example, the Julian date for 00:30:00.0 UT January 1, 2013,
+is B<2456293.520833>.
+
+=head1 AUTHOR
+
+Tom Browder <tbrowder@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2021 Tom Browder
+
+This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
+
+=end pod
