@@ -29,7 +29,7 @@ sub cal2jd is export(:ALL) {
     my %arg = ( gregorian_start => $GREGORIAN_START, @_ );
 
     my $j = $da + 1720996.5;
-    my ( $m, $y ) = ( $mo > 2 ) ? ( $mo, $ye ) : ( $mo + 12, $ye - 1 );
+    my ( $m, $y ) = ( $mo > 2 ) ?? ( $mo, $ye ) !! ( $mo + 12, $ye - 1 );
     if ( after_gregorian( $ye, $mo, $da, %arg ) ) {
         $j += int( $y / 400 ) - int( $y / 100 ) + int( $y / 4 );
     }
@@ -53,8 +53,8 @@ sub jd2cal is export(:ALL) {
     my $c  = $i - floor( 365.25 * $b + 7.50001e-1 ) + 416;
     my $g  = floor( $c / 30.6001 );
     my $da = $c - floor( 30.6001 * $g ) + $f;
-    my $mo = $g - ( $g > 13.5 ? 13 : 1 );
-    my $ye = $b + ( $mo < 2.5 ? 1900 : 1899 );
+    my $mo = $g - ( $g > 13.5 ?? 13 !! 1 );
+    my $ye = $b + ( $mo < 2.5 ?? 1900 !! 1899 );
     $ye, $mo, $da;
 }
 
@@ -122,8 +122,8 @@ sub is_leapyear is export(:ALL) {
     my %arg = ( gregorian => 1, @_ );
     $yr = int($yr);
     return %arg{gregorian}
-      ? ( $yr % 4 == 0 ) && ( ( $yr % 100 != 0 ) || ( $yr % 400 == 0 ) )
-      : $yr % 4 == 0;
+      ?? ( $yr % 4 == 0 ) && ( ( $yr % 100 != 0 ) || ( $yr % 400 == 0 ) )
+      !! $yr % 4 == 0;
 }
 
 sub day_of_year is export(:ALL) {
@@ -131,7 +131,7 @@ sub day_of_year is export(:ALL) {
     my $mo = shift;
     my $dy = shift;
 
-    my $k = is_leapyear($yr, @_) ? 1 : 2;
+    my $k = is_leapyear($yr, @_) ?? 1 !! 2;
     $dy = int($dy);
     int(275 * $mo / 9.0) - ($k * int(($mo + 9) / 12.0)) + $dy - 30
 }
