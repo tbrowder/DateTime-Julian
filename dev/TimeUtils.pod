@@ -10,15 +10,17 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-    use Astro::Montenbruck::Time qw/:all/;
+=begin code
+use Astro::Montenbruck::Time qw/:all/;
 
-    # Convert Gregorian (new-style) date to old-style date
-    my $j = cal2jd(1799, 6, 6); # Standard Julian date of A.Pushkin's birthday
-    my $d = jd2cal($j, gregorian => 0) # (1799, 5, 25) = May 26, 1799.
+# Convert Gregorian (new-style) date to old-style date
+my $j = cal2jd(1799, 6, 6); # Standard Julian date of A.Pushkin's birthday
+my $d = jd2cal($j, gregorian => 0) # (1799, 5, 25) = May 26, 1799.
 
-    # Julian date in centuries since epoch 2000.0
-    my $t = jd_cent($j); # -2.0056810403833
-    ...
+# Julian date in centuries since epoch 2000.0
+my $t = jd_cent($j); # -2.0056810403833
+...
+=end code
 
 =head1 DESCRIPTION
 
@@ -60,63 +62,54 @@ Russia, for instance, Gregorian system was accepted on Jan 26,
 1918. See:
 L<https://en.wikipedia.org/wiki/Gregorian_calendar#Adoption_of_the_Gregorian_Calendar>
 
-
 =head1 EXPORTED CONSTANTS
 
-=over
+=item1 C<$SEC_PER_DAY> seconds per day (86400)
 
-=item * C<$SEC_PER_DAY> seconds per day (86400)
+=item1 C<$SEC_PER_CEN> seconds per century (3155760000)
 
-=item * C<$SEC_PER_CEN> seconds per century (3155760000)
+=item1 C<$J2000> Standard Julian date for start of epoch 2000,0 (2451545)
 
-=item * C<$J2000> Standard Julian date for start of epoch 2000,0 (2451545)
+=item1 C<$J1900> Standard Julian date for start of epoch 1900,0 (2415020)
 
-=item * C<$J1900> Standard Julian date for start of epoch 1900,0 (2415020)
+=item1 C<$GREGORIAN_START> Start of Gregorian calendar, YYYYMMDD (15821004)
 
-=item * C<$GREGORIAN_START> Start of Gregorian calendar, YYYYMMDD (15821004)
+=item1 C<$JD_UNIX_EPOCH> Standard Julian date for start of the Unix epoch
 
-=item * C<$JD_UNIX_EPOCH> Standard Julian date for start of the Unix epoch
-
-=back
 
 =head1 EXPORTED FUNCTIONS
 
-=over
+=item1  L</jd_cent($jd)>
 
-=item * L</jd_cent($jd)>
+=item1  L</after_gregorian($year, $month, $date)>
 
-=item * L</after_gregorian($year, $month, $date)>
+=item1  L</cal2jd($year, $month, $date)>
 
-=item * L</cal2jd($year, $month, $date)>
+=item1  L</jd2cal($jd)>
 
-=item * L</jd2cal($jd)>
+=item1  L</jd0($jd)>
 
-=item * L</jd0($jd)>
+=item1  L</unix2jd($seconds)>
 
-=item * L</unix2jd($seconds)>
+=item1  L</jd2unix($jd)>
 
-=item * L</jd2unix($jd)>
+=item1  L</jdnow()>
 
-=item * L</jdnow()>
+=item1  L</jd2mjd($jd)>
 
-=item * L</jd2mjd($jd)>
+=item1  L</mjd2jd($mjd)>
 
-=item * L</mjd2jd($mjd)>
+=item1  L</jd_cent($jd)>
 
-=item * L</jd_cent($jd)>
+=item1  L</t1900($jd)>
 
-=item * L</t1900($jd)>
+=item1  L</jd2dt($jd)>
 
+=item1  L</jd2te($jd)>
 
-=item * L</jd2dt($jd)>
+=item1  L</jd2gst($jd)>
 
-=item * L</jd2te($jd)>
-
-=item * L</jd2gst($jd)>
-
-=item * L</jd2lst($jd, $lng)>
-
-=back
+=item1  L</jd2lst($jd, $lng)>
 
 =head1 FUNCTIONS
 
@@ -130,32 +123,26 @@ Does the given date fall to period after Gregorian calendar?
 
 =head3 Positional Arguments
 
-=over
 
-=item * B<year> (astronomic, zero-based)
+=item1 B<year> (astronomic, zero-based)
 
-=item * B<month> (1-12)
+=item1 B<month> (1-12)
 
-=item * B<date> UTC date (1-31) with hours and minutes as decimal part
+=item1 B<date> UTC date (1-31) with hours and minutes as decimal part
 
-=back
 
 =head3 Optional Named Arguments
 
-=over
 
-=item *
-
-B<gregorian_start> — start of Gregorian calendar. Default value is
+=item1 B<gregorian_start> — start of Gregorian calendar. Default value is
 B<15821004> If the date is Julian ("old style"), use C<undef> value.
 To provide non-standard start of Gregorian calendar, provide a number
 in format YYYYMMDDD, e.g. C<19180126> for Jan 26, 1918.
 
-=back
 
 =head3 Returns
 
-I<true> or I<false>=.
+I<true> or I<false>.
 
 =head2 cal2jd($year, $month, $date)
 
@@ -166,28 +153,20 @@ of I<Proleptic Gregorian calendar>, which started at Oct. 4, 1582.
 
 =head3 Positional Arguments:
 
-=over
 
-=item * B<year> (astronomic, zero-based)
+=item1 B<year> (astronomic, zero-based)
 
-=item * B<month> (1-12)
+=item1 B<month> (1-12)
 
-=item * B<date> UTC date (1-31) with hours and minutes as decimal part
+=item1 B<date> UTC date (1-31) with hours and minutes as decimal part
 
-=back
 
 =head3 Optional Named Arguments
 
-=over
-
-=item *
-
-gregorian_start — start of Gregorian calendar. Default value is
+=item1 gregorian_start — start of Gregorian calendar. Default value is
 B<15821004> If the date is Julian ("old style"), use C<undef> value.
 To provide non-standard start of Gregorian calendar, provide a number
 in format YYYYMMDDD, e.g. C<19180126> for Jan 26, 1918.
-
-=back
 
 =head3 Returns
 
@@ -203,11 +182,7 @@ Standard Julian Date
 
 =head3 Optional Named Arguments
 
-=over
-
-=item * gregorian — if i<true>, the result will be old-style (Julian) date
-
-=back
+=item1 gr1egorian — if i<true>, the result will be old-style (Julian) date
 
 =head3 Returns
 
@@ -251,25 +226,19 @@ Given aI<Standard Julian date>, calculate time in centuries since epoch 2000.0.
 
 Given a I<Standard Julian date>, calculate time in centuries since epoch 1900.0.
 
-
 =head2 jd2gst($jd)
 
 Given I<Standard Julian date>, calculate I<True Greenwich Sidereal time>.
 
 =head2 jd2lst($jd, $lng)
 
-Givan I<Standard Julian date>, calculate true I<Local Sidereal time>.
+Given I<Standard Julian date>, calculate true I<Local Sidereal time>.
 
 =head3 Arguments
 
-=over
+=item1 $jd — Standard Julian date
 
-=item * $jd — Standard Julian date
-
-=item * $lng — Geographic longitude, negative for Eastern longitude, 0 by default
-
-=back
-
+=item1 $lng — Geographic longitude, negative for Eastern longitude, 0 by default
 
 =head1 AUTHOR
 
@@ -277,12 +246,12 @@ Sergey Krushinsky, C<< <krushi at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010-2019 Sergey Krushinsky.
+E<0x00a9> 2010-2019 Sergey Krushinsky.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
-See http://dev.perl.org/licenses/ for more information.
+See L<http://dev.perl.org/licenses/> for more information.
 
 =end pod

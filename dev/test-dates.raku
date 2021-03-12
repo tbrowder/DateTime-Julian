@@ -4,11 +4,6 @@ use lib <../lib ./lib>;
 use DateTime::Julian :ALL;
 
 my %utc =
-    # utc => jd
-    # tests from Wikipedia:
-    '2000-01-02T12:00:00.00Z' => 2451545.0,
-    '2013-01-01T00:30:00.00Z' => 2456293.520833,
-
     # tests from the JPL website:
     #     https://ssd.jpl.nasa.gov/tc.cgi
     '3501-08-15T12:00:00.00Z' => 3000000.0,
@@ -23,8 +18,11 @@ my %jd = %utc.invert;
 
 for %jd.keys.sort -> $jd {
     my $utc = %jd{$jd};
-    my $dt = DateTime::Julian.new: :juliandate($jd.Real);
-    say "input: '{$utc}' output: '{$dt.utc.Str}'";
+    my $dt  = DateTime::Julian.new: :juliandate($jd.Real);
+    my $in  = $utc;
+    my $out = $dt.utc.Str;
+    say "fail:  '$in'   ne    '$out'" if $in ne $out;
+    say "input: '$in' output: '$out'";
 }
 
 =finish
