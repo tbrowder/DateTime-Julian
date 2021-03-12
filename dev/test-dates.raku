@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 
-use lib <../lib ./lib>;
+use lib <../lib ./lib ./>;
 use DateTime::Julian :ALL;
 
 my %utc =
@@ -34,5 +34,3 @@ for %jd -> $jd, $utc {
     my $dt = DateTime::Julian.new: :juliandate($jd);
     is $dt.utc, $utc;
 }
-
-

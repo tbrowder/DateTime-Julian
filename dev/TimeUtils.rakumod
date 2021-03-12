@@ -1,11 +1,6 @@
-package Astro::Montenbruck::Time;
-
-use warnings;
-use strict;
+unit module TimeUtils;
 
 our $VERSION = 0.01;
-
-use Exporter qw/import/;
 
 our $SEC_PER_DAY = 86400;        # Seconds per day
 our $SEC_PER_CEN = 3155760000;
@@ -18,21 +13,7 @@ our $GREGORIAN_START = 15821004;    # Start of Gregorian calendar (YYYYMMDD)
 our $JD_UNIX_EPOCH = _gmtime2jd( gmtime(0) )
   ; # Standard Julian date for the beginning of Unix epoch, Jan 1 1970 on most Unix systems
 
-our %EXPORT_TAGS = (
-    all => [
-        qw/jd_cent after_gregorian cal2jd jd2cal jd0 unix2jd jd2mjd mjd2jd
-          jd2unix jdnow t1900 jd2gst jd2lst
-          is_leapyear day_of_year
-          $SEC_PER_DAY $SEC_PER_CEN $J2000 $J1900 $GREGORIAN_START $JD_UNIX_EPOCH/
-    ],
-);
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-use POSIX;
-use Astro::Montenbruck::MathUtils qw/polynome ddd frac to_range/;
-
-sub after_gregorian {
+sub after_gregorian is export(:ALL) {
     my $y   = shift;
     my $m   = shift;
     my $d   = shift;
@@ -41,7 +22,7 @@ sub after_gregorian {
     polynome( 100, $d, $m, $y ) >= $arg{gregorian_start};
 }
 
-sub cal2jd {
+sub cal2jd is export(:ALL) {
     my $ye  = shift;
     my $mo  = shift;
     my $da  = shift;
@@ -58,7 +39,7 @@ sub cal2jd {
     $j + 365 * $y + floor( 30.6001 * ( $m + 1 ) );
 }
 
-sub jd2cal {
+sub jd2cal is export(:ALL) {
     my $jd = shift;
     my %arg = ( gregorian => 1, @_ );
 
@@ -77,32 +58,32 @@ sub jd2cal {
     $ye, $mo, $da;
 }
 
-sub jd0 {
+sub jd0 is export(:ALL) {
     my $j = shift;
     floor( $j - 0.5 ) + 0.5;
 }
 
-sub unix2jd {
+sub unix2jd is export(:ALL) {
     $JD_UNIX_EPOCH + $_[0] / $SEC_PER_DAY;
 }
 
-sub jd2unix {
+sub jd2unix is export(:ALL) {
     int( ( $_[0] - $JD_UNIX_EPOCH ) * $SEC_PER_DAY );
 }
 
-sub _gmtime2jd {
+sub _gmtime2jd is export(:ALL) {
     cal2jd( $_[5] + 1900, $_[4] + 1, $_[3] + ddd( @_[ 2, 1, 0 ] ) / 24 );
 }
 
-sub jdnow {
+sub jdnow is export(:ALL) {
     _gmtime2jd( gmtime() );
 }
 
-sub jd2mjd {
+sub jd2mjd is export(:ALL) {
     $_[0] - $J2000;
 }
 
-sub mjd2jd {
+sub mjd2jd is export(:ALL) {
     $_[0] + $J2000;
 }
 
@@ -110,33 +91,33 @@ sub mjd2jd {
 # Arguments:
 # julian date
 # julian date corresponding to the epoch start
-sub _t {
+sub _t is export(:ALL) {
     my ( $jd, $epoch ) = @_;
     ( $jd - $epoch ) / 36525;
 }
 
-sub jd_cent {
+sub jd_cent is export(:ALL) {
     _t( $_[0], $J2000 );
 }
 
-sub t1900 {
+sub t1900 is export(:ALL) {
     _t( $_[0], $J1900 );
 }
 
-sub jd2gst {
+sub jd2gst is export(:ALL) {
     my $jh = shift;
     my $j0 = jd0($jh);
     my $s0 = polynome( t1900($j0), 0.276919398, 100.0021359, 0.000001075 );
     24 * ( frac($s0) + abs( $jh - $j0 ) * $SOLAR_TO_SIDEREAL );
 }
 
-sub jd2lst {
+sub jd2lst is export(:ALL) {
     my ( $jd, $lon ) = @_;
     $lon //= 0;
     to_range( jd2gst($jd) - $lon / 15, 24 );
 }
 
-sub is_leapyear {
+sub is_leapyear is export(:ALL) {
     my $yr = shift;
     my %arg = ( gregorian => 1, @_ );
     $yr = int($yr);
@@ -145,7 +126,7 @@ sub is_leapyear {
       : $yr % 4 == 0;
 }
 
-sub day_of_year {
+sub day_of_year is export(:ALL) {
     my $yr = shift;
     my $mo = shift;
     my $dy = shift;
