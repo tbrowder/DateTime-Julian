@@ -1,6 +1,6 @@
 unit module MathUtils;
 
-use POSIX:from<Perl5> qw (floor ceil acos modf fmod);
+use POSIX:from<Perl5> qw (modf fmod);
 #use List::Util qw/any reduce/;
 use List::Util <any reduce>;
 

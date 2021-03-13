@@ -14,84 +14,51 @@ submethod TWEAK {
         $!datetime = jd2utc self.juliandate;
     }
     else {
-        $!juliandate = utc2jd self.utc;
+        $!juliandate = utc2jd self.datetime;
     }
 }
 
-sub utc2jd($utc, :$is-julian = False --> Real) is export(:utc2jd) {
-    my $dt = DateTime.new: $utc;
-}
-
-sub jd2utc(Real $jd is copy, :$is-julian = False --> DateTime) is export(:jd2utc) {
-    # Source of date algorithm is from Wikipedia (from Richards, 1998 and 2013; I have ordered the 1998
-    # book from Amazon)
-
-    $jd += 0.5; # from Lawrence, see p. 42, step 1
-
-    # TODO: this is INCOMPLETE!!
-    #       how do we get the time of day????
-    # save the fractional part
-    my $hours = $jd.abs - $jd.truncate.abs; # same as a "frac" routine
+multi sub utc2jd(
+    DateTime $dt, 
+    :$is-julian-calendar = False --> Real) is export(:utc2jd) {
+    # Source of date algorithm is from CPAN module Astro::Montenbruck::Time :cal2jd
 
     =begin comment
-    my $day-correction = 0;
-    if $hours > 24 {
-        ++$day-correction;
-    }
+    # book from Amazon)
+    my \Y = $dt.year;
+    my \M = $dt.month;
+    my \D = $dt.day;
+    my $jdn = (1461 * (Y+4800 + (M-14)/12))/4+(367*(M-2-12 * ((M-14)/12)))/12-(3*((Y+4900+(M-14)/12)/100))/4+D-32075;
+    my $h = $dt.hour;
+    my $m = $dt.minute;
+    my $s = $dt.second;
+    my $hms = $h-12/24 + $m/1440 + $s/86400;
+    # check UT time of day in case a JD increase is needed
+    # "For a point in time in a given Julian day after midnight UTC and before 12:00 UT,
+    # add 1 or uses the JDN of the next afternoon."
+    my $dt-noon = DateTime.new: :year($dt.year), :month($dt.month), :day($dt.day), :hour(12), :minute(0), :second(0);
+    $jdn += 1 if $dt < $dt-noon;
+    $jdn += $hms;
+    return $jdn;
     =end comment
+}
 
-    my ($hour, $minute, $second) = dayfrac2hms $hours;
+multi sub utc2jd(
+    $utc, #= a date string in the '$formatter' format
+    :$is-julian-calendar = False --> Real) is export(:utc2jd) {
+    my $dt = DateTime.new: $utc;
+    return utc2jd $dt, :$is-julian-calendar;
+}
 
-    # constants
-    constant y = 4716;
-    constant j = 1401;
-    constant m = 2;
-    constant n = 12;
-    constant r = 4;
-    constant p = 1461;
-    constant v = 3;
-    constant u = 5;
-    constant s = 153;
-    constant w = 2;
-    constant B = 274277;
-    constant C = -38;
+our $formatter is export(:formatter) = sub ($self) {
+    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2fZ",
+        .year, .month, .day, .hour, .minute, .second
+        given $self;
+}
 
-    my \J = $jd.truncate;
+sub jd2utc(Real $jd is copy, :$is-julian-calendar = False --> DateTime) is export(:jd2utc) {
+    # Source of date algorithm is from CPAN module Astro::Montenbruck::Time :jd2cal
 
-    # step 1
-    my $f = J + j + (((4 * J + B) div 146097) * 3) div 4 + C;
-    $f = J + j if $is-julian;
-    my \f = $f;
-
-    # step 2
-    my \e = r * f + v;
-
-    # step 3
-    my \g = (e mod p) div r;
-
-    # step 4
-    my \h = u * g + w;
-
-    # step 5
-    my \D = (h mod s) div u + 1;
-
-    # step 6
-    my \M = ((h div s + m) mod n) + 1;
-
-    # step 7
-    my \Y = (e div p) - y + (n + m - M) div n;
-
-    # From the description of the algorithm:
-    #
-    # "D, M, and Y are the numbers of the day, month, and year, respectively,
-    # for the afternoon at the beginning of the given Julian day."
-    #
-    # From the Wikipedia definition of a Julian date:
-    #
-    # "The Julian date (JD) of any instant is the Julian day number plus the fraction
-    # of a day since the preceding noon in Universal Time. Julian dates are
-    # expressed as a Julian day number with a decimal fraction added."
-    #
     # So how do we get the UTC value? Here is a table to help visualize the
     # two values (note that 0.5 is 12 hours:
     #
@@ -102,12 +69,9 @@ sub jd2utc(Real $jd is copy, :$is-julian = False --> DateTime) is export(:jd2utc
     #     D-1 18:00        J   .75
     #     D-1 24:00        J+1 .0        day N ends as day N+1 starts
     #     D   00:00        J+1 .0        day N
-    #
-    # Rules:
-    #
-    # The algorithm gives us the Julian date expressed in YYYY-MM-DD format.
-    # If the
-    return DateTime.new(:year(Y), :month(M), :day(D), :$hour, :$minute, :$second);
+    
+    # tmp hack
+    return DateTime.now
 }
 
 sub frac($x) is export(:frac) {
@@ -123,7 +87,7 @@ sub dayfrac2hms($x, :$debug --> List) is export(:dayfrac2hms) {
     my $m = (60 * frac($hreal)).Int;
     # seconds are rounded to 2
     my $s = 60 * frac(60 * frac($hreal));
-    my $s2 = $s.round(0.01);
+    my $s2 = $s.round(0.0001);
     note "DEBUG: \$s = $s, \$s2 = $s2" if $debug;
     $h, $m, $s2;
 }
@@ -132,6 +96,7 @@ sub dayfrac2hms($x, :$debug --> List) is export(:dayfrac2hms) {
 method utc { self.datetime }
 method jd  { self.juliandate }
 method dt  { self.datetime }
+method Str { self.datetime.Str }
 # expose normal dt methods
 method year    { self.dt.year }
 method month   { self.dt.month }

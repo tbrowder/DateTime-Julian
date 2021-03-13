@@ -33,7 +33,7 @@ sub after_gregorian($y, $m, $d, :$gregorian_start) is export(:ALL) {
     polynome( 100, $d, $m, $y ) >= $gregorian_start;
 }
 
-sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:ALL) {
+sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:cal2jd) {
     =begin comment
     my $ye  = shift;
     my $mo  = shift;
@@ -53,7 +53,7 @@ sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:ALL) {
     $j + 365 * $y + floor( 30.6001 * ( $m + 1 ) );
 }
 
-sub jd2cal($jd, :$gregorian) is export(:ALL) {
+sub jd2cal($jd, :$gregorian) is export(:jd2cal) {
     =begin comment
     my $jd = shift;
     my %arg = ( gregorian => 1, @_ );
@@ -90,8 +90,10 @@ sub jd2unix() is export(:ALL) {
     int( ( $_[0] - $JD_UNIX_EPOCH ) * $SEC_PER_DAY );
 }
 
-sub _gmtime2jd() is export(:ALL) {
-    cal2jd( $_[5] + 1900, $_[4] + 1, $_[3] + ddd( @_[ 2, 1, 0 ] ) / 24 );
+sub _gmtime2jd(*@) {
+    #sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:ALL) {
+    #cal2jd( $_[5] + 1900, $_[4] + 1, $_[3] + ddd( @_[ 2, 1, 0 ] ) / 24 );
+    cal2jd( @[5] + 1900, @[4] + 1, @[3] + ddd(@[ 2, 1, 0 ] ) / 24 );
 }
 
 sub jdnow() is export(:ALL) {
@@ -110,7 +112,7 @@ sub mjd2jd() is export(:ALL) {
 # Arguments:
 # julian date
 # julian date corresponding to the epoch start
-sub _t is export(:ALL) {
+sub _t {
     my ( $jd, $epoch ) = @_;
     ( $jd - $epoch ) / 36525;
 }

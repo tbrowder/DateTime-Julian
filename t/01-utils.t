@@ -22,5 +22,5 @@ for %t.keys.sort -> $k {
 
     is $h, $hh;
     is $m, $mm;
-    is $s, $ss;
+    is-approx $s, $ss, 0.1;
 }

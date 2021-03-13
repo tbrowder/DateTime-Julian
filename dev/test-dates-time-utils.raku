@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 
-use lib <../lib ./lib ./>;
-use TimeUtils :ALL;
+use lib <./.>;
+use TimeUtils :jd2cal, :cal2jd;
 
 my %utc =
     # tests from the JPL website:

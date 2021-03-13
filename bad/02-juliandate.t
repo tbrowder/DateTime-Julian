@@ -1,7 +1,9 @@
 use Test;
 use DateTime::Julian;
 
-plan 12;
+my $utc2jd = 0;
+plan 22;
+#plan 17;
 
 my ($dt, $jd, $utc);
 
@@ -26,8 +28,6 @@ is $dt.hour, 0;
 is $dt.minute, 30;
 is $dt.second, 0;
 
-=finish
-
 # tests from the JPL website:
 #     https://ssd.jpl.nasa.gov/tc.cgi
 my %utc =
@@ -39,16 +39,22 @@ my %utc =
     '3501-08-16T00:00:00.86Z' => 3000000.50001,
 ;
 
-for %utc -> $utc, $jd {
-    my $dt = DateTime::Julian.new: $utc;
-    is $dt.juliandate, $jd;
+#=begin comment
+for %utc.kv -> $utc, $jd {
+    my $dt = DateTime.new: $utc;
+    my $jt = DateTime::Julian.new: :datetime($dt);
+    is-approx $jt.juliandate, $jd, 0.0001, "UTC to JD";
 }
+#=end comment
 
 # reverse and test the key/values to ensure they round trip okay
 my %jd = %utc.invert;
 
-for %jd -> $jd, $utc {
-    my $dt = DateTime::Julian.new: :juliandate($jd);
-    is $dt.utc, $utc;
+for %jd.kv -> $jd, $utc {
+    my $dt = DateTime::Julian.new: :juliandate($jd.Real);
+    note "DEBUG: \$dt: '{$dt.Str}' \$utc: '{$utc}'";
+    is $dt.Str, $utc, "JD to UTC";
 }
+
+done-testing;
 
