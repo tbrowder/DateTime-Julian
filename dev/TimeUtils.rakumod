@@ -1,36 +1,50 @@
 unit module TimeUtils;
 
+# Raku additions:
+use Time::gmtime; # a Raku module
+
+use POSIX:from<Perl5> qw/modf/;
+use MathUtils :ALL;
+
 our $VERSION = 0.01;
 
-our $SEC_PER_DAY = 86400;        # Seconds per day
-our $SEC_PER_CEN = 3155760000;
-our $J2000       = 2451545;      # Standard Julian Date for 1.1.2000 12:00
-our $J1900       = 2415020
+our $SEC_PER_DAY is export = 86400;        # Seconds per day
+our $SEC_PER_CEN is export = 3155760000;
+our $J2000       is export = 2451545;      # Standard Julian Date for 1.1.2000 12:00
+our $J1900       is export = 2415020
   ;    # Standard Julian Date for  31.12.1899 12:00 (astronomical epoch 1900.0)
-our $SOLAR_TO_SIDEREAL = 1.002737909350795
+our $SOLAR_TO_SIDEREAL is export = 1.002737909350795
   ;    # Difference in between Sidereal and Solar hour (the former is shorter)
-our $GREGORIAN_START = 15821004;    # Start of Gregorian calendar (YYYYMMDD)
-our $JD_UNIX_EPOCH = _gmtime2jd( gmtime(0) )
+our $GREGORIAN_START is export = 15821004;    # Start of Gregorian calendar (YYYYMMDD)
+
+our $JD_UNIX_EPOCH is export = _gmtime2jd( gmtime(0) )
   ; # Standard Julian date for the beginning of Unix epoch, Jan 1 1970 on most Unix systems
 
-sub after_gregorian is export(:ALL) {
+sub after_gregorian($y, $m, $d, :$gregorian_start) is export(:ALL) {
+    =begin comment
     my $y   = shift;
     my $m   = shift;
     my $d   = shift;
     my %arg = ( gregorian_start => $GREGORIAN_START, @_ );
     return 0 unless defined %arg{gregorian_start};
     polynome( 100, $d, $m, $y ) >= %arg{gregorian_start};
+    =end comment
+    return 0 unless defined $gregorian_start;
+    polynome( 100, $d, $m, $y ) >= $gregorian_start;
 }
 
-sub cal2jd is export(:ALL) {
+sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:ALL) {
+    =begin comment
     my $ye  = shift;
     my $mo  = shift;
     my $da  = shift;
     my %arg = ( gregorian_start => $GREGORIAN_START, @_ );
+    =end comment
 
     my $j = $da + 1720996.5;
     my ( $m, $y ) = ( $mo > 2 ) ?? ( $mo, $ye ) !! ( $mo + 12, $ye - 1 );
-    if ( after_gregorian( $ye, $mo, $da, %arg ) ) {
+    #if ( after_gregorian( $ye, $mo, $da, %arg ) ) {
+    if ( after_gregorian( $ye, $mo, $da, :gregorian_start ) ) {
         $j += int( $y / 400 ) - int( $y / 100 ) + int( $y / 4 );
     }
     else {
@@ -39,12 +53,15 @@ sub cal2jd is export(:ALL) {
     $j + 365 * $y + floor( 30.6001 * ( $m + 1 ) );
 }
 
-sub jd2cal is export(:ALL) {
+sub jd2cal($jd, :$gregorian) is export(:ALL) {
+    =begin comment
     my $jd = shift;
     my %arg = ( gregorian => 1, @_ );
+    =end comment
 
     my ( $f, $i ) = modf( $jd - $J1900 + 0.5 );
-    if ( %arg{gregorian} && $i > -115860 ) {
+    #if ( %arg{gregorian} && $i > -115860 ) {
+    if ( $gregorian && $i > -115860 ) {
         my $a = floor( $i / 36524.25 + 9.9835726e-1 ) + 14;
         $i += 1 + $a - floor( $a / 4 );
     }
@@ -58,32 +75,34 @@ sub jd2cal is export(:ALL) {
     $ye, $mo, $da;
 }
 
-sub jd0 is export(:ALL) {
+sub jd0($j) is export(:ALL) {
+    =begin comment
     my $j = shift;
+    =end comment
     floor( $j - 0.5 ) + 0.5;
 }
 
-sub unix2jd is export(:ALL) {
+sub unix2jd() is export(:ALL) {
     $JD_UNIX_EPOCH + $_[0] / $SEC_PER_DAY;
 }
 
-sub jd2unix is export(:ALL) {
+sub jd2unix() is export(:ALL) {
     int( ( $_[0] - $JD_UNIX_EPOCH ) * $SEC_PER_DAY );
 }
 
-sub _gmtime2jd is export(:ALL) {
+sub _gmtime2jd() is export(:ALL) {
     cal2jd( $_[5] + 1900, $_[4] + 1, $_[3] + ddd( @_[ 2, 1, 0 ] ) / 24 );
 }
 
-sub jdnow is export(:ALL) {
+sub jdnow() is export(:ALL) {
     _gmtime2jd( gmtime() );
 }
 
-sub jd2mjd is export(:ALL) {
+sub jd2mjd() is export(:ALL) {
     $_[0] - $J2000;
 }
 
-sub mjd2jd is export(:ALL) {
+sub mjd2jd() is export(:ALL) {
     $_[0] + $J2000;
 }
 
@@ -104,6 +123,7 @@ sub t1900 is export(:ALL) {
     _t( $_[0], $J1900 );
 }
 
+=begin comment
 sub jd2gst is export(:ALL) {
     my $jh = shift;
     my $j0 = jd0($jh);
@@ -116,22 +136,28 @@ sub jd2lst is export(:ALL) {
     $lon //= 0;
     to_range( jd2gst($jd) - $lon / 15, 24 );
 }
+=end comment
 
-sub is_leapyear is export(:ALL) {
+sub is_leapyear($yr, :$gregorian) is export(:ALL) {
+    =begin comment
     my $yr = shift;
     my %arg = ( gregorian => 1, @_ );
     $yr = int($yr);
     return %arg{gregorian}
+    =end comment
+    return $gregorian
       ?? ( $yr % 4 == 0 ) && ( ( $yr % 100 != 0 ) || ( $yr % 400 == 0 ) )
       !! $yr % 4 == 0;
 }
 
-sub day_of_year is export(:ALL) {
+sub day_of_year($yr, $mo, $dy, :$gregorian) is export(:ALL) {
+    =begin comment
     my $yr = shift;
     my $mo = shift;
     my $dy = shift;
+    =end comment
 
-    my $k = is_leapyear($yr, @_) ?? 1 !! 2;
+    my $k = is_leapyear($yr, :$gregorian) ?? 1 !! 2;
     $dy = int($dy);
     int(275 * $mo / 9.0) - ($k * int(($mo + 9) / 12.0)) + $dy - 30
 }
