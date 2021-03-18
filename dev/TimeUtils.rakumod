@@ -17,9 +17,36 @@ our $SOLAR_TO_SIDEREAL is export = 1.002737909350795
   ;    # Difference in between Sidereal and Solar hour (the former is shorter)
 our $GREGORIAN_START is export = 15821004;    # Start of Gregorian calendar (YYYYMMDD)
 
-our $JD_UNIX_EPOCH is export = _gmtime2jd( gmtime(0) )
+#our $JD_UNIX_EPOCH is export = _gmtime2jd( gmtime(0) )
   ; # Standard Julian date for the beginning of Unix epoch, Jan 1 1970 on most Unix systems
 
+
+#| =head2 after_gregorian($year, $month, $date, gregorian_start => $YYYYMMDD )
+#|
+#| Does the given date fall to period after Gregorian calendar?
+#|
+#| =head3 Positional Arguments
+#|
+#|
+#| =item1 B<year> (astronomic, zero-based)
+#|
+#| =item1 B<month> (1-12)
+#|
+#| =item1 B<date> UTC date (1-31) with hours and minutes as decimal part
+#|
+#|
+#| =head3 Optional Named Arguments
+#|
+#|
+#| =item1 B<gregorian_start> — start of Gregorian calendar. Default value is
+#| B<15821004> If the date is Julian ("old style"), use C<undef> value.
+#| To provide non-standard start of Gregorian calendar, provide a number
+#| in format YYYYMMDDD, e.g. C<19180126> for Jan 26, 1918.
+#|
+#|
+#| =head3 Returns
+#|
+#| I<true> or I<false>.
 sub after_gregorian($y, $m, $d, :$gregorian_start) is export(:ALL) {
     =begin comment
     my $y   = shift;
@@ -29,10 +56,36 @@ sub after_gregorian($y, $m, $d, :$gregorian_start) is export(:ALL) {
     return 0 unless defined %arg{gregorian_start};
     polynome( 100, $d, $m, $y ) >= %arg{gregorian_start};
     =end comment
-    return 0 unless defined $gregorian_start;
-    polynome( 100, $d, $m, $y ) >= $gregorian_start;
+    return 0 unless defined $gregorian_start and $gregorian_start;
+    polynome( 100, [$d, $m, $y] ) >= $gregorian_start;
 }
 
+#| cal2jd($year, $month, $date)
+#|
+#| Convert civil date/time to Standard Julian date.
+#|
+#| If the C<gregorian_start> argument is not provided, it is assumed that
+#| this is a date of the I<Proleptic Gregorian calendar>, which started
+#| at Oct. 4, 1582.
+#|
+#| Positional Arguments:
+#|
+#| =item1 B<year> (astronomic, zero-based)
+#|
+#| =item1 B<month> (1-12)
+#|
+#| =item1 B<date> UTC date (1-31) with hours and minutes as decimal part
+#|
+#| =head3 Optional Named Arguments
+#|
+#| =item1 gregorian_start — start of Gregorian calendar. Default value is
+#| B<15821004> If the date is Julian ("old style"), use C<undef> value.
+#| To provide non-standard start of Gregorian calendar, provide a number
+#| in format YYYYMMDDD, e.g. C<19180126> for Jan 26, 1918.
+#|
+#| =head3 Returns
+#|
+#| Standard Julian date
 sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:cal2jd) {
     =begin comment
     my $ye  = shift;
@@ -44,15 +97,32 @@ sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:cal2jd) {
     my $j = $da + 1720996.5;
     my ( $m, $y ) = ( $mo > 2 ) ?? ( $mo, $ye ) !! ( $mo + 12, $ye - 1 );
     #if ( after_gregorian( $ye, $mo, $da, %arg ) ) {
-    if ( after_gregorian( $ye, $mo, $da, :gregorian_start ) ) {
-        $j += int( $y / 400 ) - int( $y / 100 ) + int( $y / 4 );
+    if ( after_gregorian( $ye, $mo, $da, :$gregorian_start ) ) {
+        $j += Int( $y / 400 ) - Int( $y / 100 ) + Int( $y / 4 );
     }
     else {
-        $j += int( ( $y + 4716 ) / 4 ) - 1181;
+        $j += Int( ( $y + 4716 ) / 4 ) - 1181;
     }
     $j + 365 * $y + floor( 30.6001 * ( $m + 1 ) );
 }
 
+#| jd2cal($jd)
+#|
+#| Convert Standard Julian date to civil date/time
+#|
+#| Positional Arguments
+#|
+#|   jd - Standard Julian Date
+#|
+#| Optional Named Arguments
+#|
+#|   gregorian - if true, the result will be old-style (Julian) date
+#|
+#| Returns
+#|
+#| A list corresponding to the input values of the cal2jd($year, $month, $date) function.
+#| The date is given in the proleptic Gregorian calendar system unless B<gregorian>
+#| flag is set to true>
 sub jd2cal($jd, :$gregorian) is export(:jd2cal) {
     =begin comment
     my $jd = shift;
@@ -75,6 +145,7 @@ sub jd2cal($jd, :$gregorian) is export(:jd2cal) {
     $ye, $mo, $da;
 }
 
+
 sub jd0($j) is export(:ALL) {
     =begin comment
     my $j = shift;
@@ -82,6 +153,7 @@ sub jd0($j) is export(:ALL) {
     floor( $j - 0.5 ) + 0.5;
 }
 
+=begin comment
 sub unix2jd() is export(:ALL) {
     $JD_UNIX_EPOCH + $_[0] / $SEC_PER_DAY;
 }
@@ -89,6 +161,7 @@ sub unix2jd() is export(:ALL) {
 sub jd2unix() is export(:ALL) {
     int( ( $_[0] - $JD_UNIX_EPOCH ) * $SEC_PER_DAY );
 }
+=end comment
 
 sub _gmtime2jd(*@) {
     #sub cal2jd($ye, $mo, $da, :$gregorian_start) is export(:ALL) {
@@ -163,3 +236,52 @@ sub day_of_year($yr, $mo, $dy, :$gregorian) is export(:ALL) {
     $dy = int($dy);
     int(275 * $mo / 9.0) - ($k * int(($mo + 9) / 12.0)) + $dy - 30
 }
+
+#=finish
+# code from Sergey below
+# sub jd2cal renamed jd2cal2 for the moment
+
+constant DJD_TO_JD = 2415020; # aka: $J1900;
+
+# function Int?
+sub fni ($x) {
+    return sign($x) * truncate(abs($x));
+}
+
+# least-integer function
+# function ceiling?
+sub fnl($x) {
+    return fni($x) + fni((sign($x) - 1.0) / 2.0);
+}
+
+sub jd2cal2($jd) is export(:jd2cal2) {
+    my $dj = $jd - DJD_TO_JD;
+    my $d = $dj + 0.5;
+    my $i = fnl($d);
+    my $fd = $d - $i;
+
+    # If time is 24:00 then increment day
+    if ($fd == 1) {
+        $fd = 0;
+        $i++;
+    }
+    # Deal with Gregorian change
+    if ($i > -115860) {
+        my $a = fnl( ($i / 36524.25) + 9.9835726E-1) + 14;
+        $i += 1 + $a - fnl($a / 4);
+    }
+    my $b = fnl($i / 365.25 + 8.02601e-1);
+    my $c = $i - fnl(365.25 * $b + 7.50001e-1) + 416;
+    my $g = fnl($c / 30.6001);
+    my $dh = $c - fnl(30.6001 * $g) + $fd;
+    my $mo = $g - ($g > 13.5 ?? 13 !! 1);
+    my $ye = $b + ($mo < 2.5 ?? 1900 !! 1899);
+    # convert astronomical, zero-based year to civil
+    if ($ye < 1) {
+      $ye--;
+    }
+    my $hm = ($dh - truncate($dh)) * 24.0;
+    my $da = truncate($dh);
+    return ($ye, $mo, $da, $hm);
+}
+

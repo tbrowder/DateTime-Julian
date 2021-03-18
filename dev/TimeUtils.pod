@@ -153,7 +153,6 @@ of I<Proleptic Gregorian calendar>, which started at Oct. 4, 1582.
 
 =head3 Positional Arguments:
 
-
 =item1 B<year> (astronomic, zero-based)
 
 =item1 B<month> (1-12)
@@ -182,7 +181,7 @@ Standard Julian Date
 
 =head3 Optional Named Arguments
 
-=item1 gr1egorian — if i<true>, the result will be old-style (Julian) date
+=item1 gregorian — if i<true>, the result will be old-style (Julian) date
 
 =head3 Returns
 
