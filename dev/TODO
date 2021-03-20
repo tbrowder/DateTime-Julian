@@ -1,0 +1,9 @@
++ get JPL access code from Curt working for jd
++ collect large amount of test data from JPL,
+  particularly for 2022 and 2023
++ incorporate Sergey's test data as able
++ add to docs Lawrence's info on day start/end
+  ("midnight is end of one day and start of another")
++ add to docs blurb on the general process of
+  finding position in local coords of a planet
+
