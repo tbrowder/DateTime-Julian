@@ -1,0 +1,36 @@
+https://www.mathworks.com/help/matlab/ref/fix.html#description
+==============================================================
+
+Matlab function fix()
+Description
+
+Y = fix(X) rounds each element of X to the nearest integer toward zero. This operation effectively truncates the numbers in X to integers by removing the decimal portion of each number:
+
+For positive numbers, the behavior of fix is the same as floor.
+
+For negative numbers, the behavior of fix is the same as ceil.
+
+Examples:
+
+X = [-1.9 -3.4; 1.6 2.5; -4.5 4.5]
+X = 3×2
+
+   -1.9000   -3.4000
+    1.6000    2.5000
+   -4.5000    4.5000
+Y = fix(X)
+Y = 3×2
+
+    -1    -3
+     1     2
+    -4     4
+
+X = [1.4+2.3i 3.1-2.2i -5.3+10.9i]
+X = 1×3 complex
+
+   1.4000 + 2.3000i   3.1000 - 2.2000i  -5.3000 +10.9000i
+
+Y = fix(X)
+Y = 1×3 complex
+
+   1.0000 + 2.0000i   3.0000 - 2.0000i  -5.0000 +10.0000i

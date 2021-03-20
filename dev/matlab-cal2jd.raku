@@ -1,6 +1,22 @@
 #!/usr/bin/env raku
+
 # SOURCE
 # https://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/15285/versions/25/previews/geodetic/cal2jd.m/index.html
+
+=begin comment
+
+Matlab function fix description:
+
+"Y = fix(X)" rounds each element of X to the nearest integer toward zero. 
+This operation effectively truncates the numbers in X to integers by 
+removing the decimal portion of each number:
+
+  + For positive numbers, the behavior of fix is the same as floor.
+
+  + For negative numbers, the behavior of fix is the same as ceil.
+
+=end comment
+
 
 sub cal2jd($yr, $mn where {0 < $_ < 13}, $dy) is export(:cal2jd) {
     # CAL2JD  Converts calendar date to Julian date using algorithm
@@ -21,8 +37,8 @@ sub cal2jd($yr, $mn where {0 < $_ < 13}, $dy) is export(:cal2jd) {
 
     if $dy < 1 {
         #if (mn == 2 & dy > 29) | (any(mn == [3 5 9 11]) & dy > 30) | (dy > 31)
-        if ($mn == 2 && $dy > 29) || (($mn ~~ /3|5|9|11/) && $dy > $30) || ($dy > 31) {
-            note "Invalid input day";
+        if ($mn == 2 && $dy > 29) || (($mn ~~ /3|5|9|11/) && $dy > 30) || ($dy > 31) {
+            die "Invalid input day: '$yr/$mn/$dy'";
             return;
         }
     }
@@ -49,7 +65,7 @@ sub cal2jd($yr, $mn where {0 < $_ < 13}, $dy) is export(:cal2jd) {
         $b = floor($y/400) - floor($y/100);
     }
     else {
-        note "Dates between October 5 & 15, 1582 do not exist";
+        die "Dates between October 5 & 15, 1582 do not exist, you entered: '$yr/$mn/$dy'";
         return;
     }
 
@@ -61,4 +77,3 @@ sub cal2jd($yr, $mn where {0 < $_ < 13}, $dy) is export(:cal2jd) {
         $jd = floor(365.25 * $y - 0.75) + floor(30.6001 * ($m + 1)) + $b + 1720996.5 + $dy;
     }
 }
-
