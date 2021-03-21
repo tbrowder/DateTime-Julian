@@ -2,8 +2,9 @@
 
 use lib <./.>;
 #use MathUtils :ALL;
-use TimeUtils :jd2cal, :cal2jd, :jd2cal2;
-use Time :hours2hms;
+use TimeUtils :jd2cal, :cal2jd, :jd2cal2, :cal2jd2;
+use Time :hours2hms, :hms2days;
+use Math::FractionalPart :afrac;
 
 #note "DEBUG: early exit";exit;
 
@@ -48,11 +49,34 @@ for %utc.keys.sort -> $utc {
     my $dt   = DateTime.new: $utc;
     say "\$dt input: '{$dt.Str}'";
 
-    my ($year, $month, $day) = $dt.year, $dt.month, $dt.day;
-    my $jd = cal2jd $year, $month, $day;
+    my ($year, $month, $day, $hour, $minute, $second) = 
+        $dt.year, $dt.month, $dt.day, $dt.hour, $dt.minute, $dt.second;
+    # convert day/hour/minute/second to day.decimalhms
+    my $decday = hms2days $hour, $minute, $second;
+    $decday += $day;
+    my $jd = cal2jd $year, $month, $decday;
+    #my $jd = cal2jd2 $year, $month, $decday;
 
     say "jd: '$jd'";
     say "   JPL jd output: '{$jdin}'";
-    say "   cal2jd output: '{$jd}'";
+    # how many decimal places?
+    my $nplaces = nplaces $jdin;
+    # round output to same number decimal places
+    my $jdr = $jd;
+    if $nplaces {
+        $jdr = sprintf '%0.*f', $nplaces, $jd;
+    }
+
+    say "   cal2jd output: '{$jdr}'";
     #is $dt.utc, $utc;
 }
+
+sub nplaces($x) {
+    my $frac = afrac $x;
+    if $frac == 0 {
+        return 0;
+    }
+    my $nplaces = (($x - $x.truncate).abs).chars - 2;
+    $nplaces;
+}
+
