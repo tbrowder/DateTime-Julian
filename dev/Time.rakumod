@@ -13,5 +13,12 @@ sub hours2hms($x --> List) is export(:hours2hms) {
     $h, $m, $s;
 }
 
+#| hours, minutes, seconds to decimal fraction of 24 hours
+sub hms2days($h, $m, $s) is export(:hms2days) {
+    my $ds  = $h * 3600;  # hours to seconds
+    $ds    += $m * 60;    # add minutes to seconds
+    $ds    += $s;         # add the seconds
+    return $ds/(24*3600); # back to fraction of a day
+}
 
 
