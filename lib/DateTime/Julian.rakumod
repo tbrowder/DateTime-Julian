@@ -1,9 +1,23 @@
-unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER>;
+#unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER>;
+unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> does Dateish is DateTime;
+use Math::FractionalPart :afrac;
 
-has DateTime $.datetime;
-has Real     $.juliandate;
+#has DateTime $.datetime;
+has Real $.juliandate;
+
+# other desirable attributes
 
 submethod TWEAK {
+    # set the DateTime attributes from the Julian date input
+    my $dt   = jd2utc $!juliandate;
+    $!year   = $dt.year;
+    $!month  = $dt.month;
+    $!day    = $dt.day;
+    self.hour   = $dt.hour;
+    self.minute = $dt.minute;
+    self.second = $dt.second;
+
+    =begin comment
     if not self.datetime.defined and not self.juliandate.defined {
         die "FATAL: You must defined one only of 'datetime' or 'juliandate'";
     }
@@ -16,10 +30,11 @@ submethod TWEAK {
     else {
         $!juliandate = utc2jd self.datetime;
     }
+    =end comment
 }
 
 multi sub utc2jd(
-    DateTime $dt, 
+    DateTime $dt,
     :$is-julian-calendar = False --> Real) is export(:utc2jd) {
     # Source of date algorithm is from CPAN module Astro::Montenbruck::Time :cal2jd
 
@@ -58,20 +73,20 @@ our $formatter is export(:formatter) = sub ($self) {
 
 sub jd2utc(Real $jd is copy, :$is-julian-calendar = False --> DateTime) is export(:jd2utc) {
     # Source of date algorithm is from CPAN module Astro::Montenbruck::Time :jd2cal
+    # as rewritten in an email to this author from Sergey Krushinsky. See the dev
+    # directory.
 
     # So how do we get the UTC value? Here is a table to help visualize the
     # two values (note that 0.5 is 12 hours:
     #
-    #     UTC              Julian date
-    #     D-1 00:00        J   .0        days start at midnight
-    #     D-1 06:00        J   .25
-    #     D-1 12:00        J   .5
-    #     D-1 18:00        J   .75
-    #     D-1 24:00        J+1 .0        day N ends as day N+1 starts
-    #     D   00:00        J+1 .0        day N
-    
-    # tmp hack
-    return DateTime.now
+    #     UTC                                       Julian date
+    #     D   00:00  day starts at midnight         J-1 .5
+    #     D   06:00                                 J-1 .75
+    #     D   12:00                                 J   .0   Julian day starts at UTC noon
+    #     D   18:00                                 J   .25
+    #     D   24:00  day D ends as day D+1 starts   J   .5
+    #     D+1 00:00  day D+1                        J   .5
+
 }
 
 sub frac($x) is export(:frac) {
@@ -92,11 +107,42 @@ sub dayfrac2hms($x, :$debug --> List) is export(:dayfrac2hms) {
     $h, $m, $s2;
 }
 
+#| decimal hours to hms
+sub hours2hms($x --> List) is export(:hours2hms) {
+    # hours must be a fraction of a day of 24 hours
+    die "FATAL: Input \$x ($x) must be >= 0 and < 24" if not (0 <= $x < 24);
+    my $hreal = $x;
+    my $h = truncate $hreal;
+    my $m = truncate(60 * afrac($hreal));
+    my $s = 60 * afrac(60 * afrac($hreal));
+    $h, $m, $s;
+}
+
+#| hours, minutes, seconds to decimal fraction of 24 hours
+sub hms2days($h, $m, $s) is export(:hms2days) {
+    my $ds  = $h * 3600;  # hours to seconds
+    $ds    += $m * 60;    # add minutes to seconds
+    $ds    += $s;         # add the seconds
+    return $ds/(24*3600); # back to fraction of a day
+}
+
+sub nplaces($x) is export(:nplaces) {
+    my $frac = afrac $x;
+    if $frac == 0 {
+        return 0;
+    }
+    my $nplaces = (($x - $x.truncate).abs).chars - 2;
+    $nplaces;
+}
+
+=finish
 # aliases
-method utc { self.datetime }
-method jd  { self.juliandate }
-method dt  { self.datetime }
-method Str { self.datetime.Str }
+#method utc { self.datetime }
+#method jd  { self.juliandate }
+#method dt  { self.datetime }
+#method Str { self.datetime.Str }
+
+=begin comment
 # expose normal dt methods
 method year    { self.dt.year }
 method month   { self.dt.month }
@@ -104,3 +150,4 @@ method day     { self.dt.day }
 method hour    { self.dt.hour }
 method minute  { self.dt.minute }
 method second  { self.dt.second }
+=end comment
