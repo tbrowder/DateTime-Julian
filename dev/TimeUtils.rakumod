@@ -249,8 +249,9 @@ sub fni ($x) {
 }
 
 # least-integer function
-# function ceiling?
+# function floor? yes!
 sub fnl($x) {
+    return $x.floor;
     return fni($x) + fni((sign($x) - 1.0) / 2.0);
 }
 
@@ -280,7 +281,7 @@ sub jd2cal2($jd) is export(:jd2cal2) {
     #if $ye < 1 {
     #  --$ye;
     #}
-    $ye < 1 ?? --$ye !! $ye;
+    $ye -= 1 if $ye < 1;
 
     my $hm = ($dh - truncate($dh)) * 24.0;
     my $da = truncate $dh;
