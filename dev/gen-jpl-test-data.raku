@@ -1,5 +1,8 @@
 #!/usr/bin/env raku
 
+say "NOTE: this test script has been turned off until needed again";
+exit;
+
 # NOTE: running this takes a bit less tha one minute in its present form
 
 # based on email from Curt Tilmes:
