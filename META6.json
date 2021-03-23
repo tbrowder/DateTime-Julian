@@ -6,6 +6,7 @@
   "build-depends": [
   ],
   "depends": [
+    "Math::FractionalPart"
   ],
   "description": "blah blah blah",
   "license": "Artistic-2.0",
