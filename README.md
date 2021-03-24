@@ -34,9 +34,11 @@ Following are some pertinent definitions from Wikipedia topic [*Julian day*](htt
 
   * The **Julian date** (JD) of any instant is the Julian day number plus the fraction of a day since the preceding noon in Universal Time. Julian dates are expressed as a Julian day number with a decimal fraction added. For example, the Julian date for 00:30:00.0 UT January 1, 2013, is **2456293.520833**.
 
-The following methods and routines were developed from several sources including those shown in the [References](#References). The author of Ref. 3 has been very helpful with this author's questions about astronomy, and much of his code has been ported to Raku for this module. 
+The following methods and routines were developed from the descriptions of code in [References 1 and 2](#References). The author of Ref. 3 has been very helpful with this author's questions about astronomy and the implementation of astronomical routines.
 
 The main purpose of this module is to simplify time and handling for this author who still finds Julian dates to be somewhat mysterious, but absolutely necessary for dealing with astronomy and predicting object positions, especially the Sun and Moon, for local observation and producing astronomical almanacs.
+
+This module will play a major supporting role in this author's planned Raku module **Astro::Almanac**;
 
 Class DateTime::Julian methods
 ==============================
