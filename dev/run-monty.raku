@@ -17,7 +17,7 @@ my $s = 76.12;
 my $res = Ddd $d, $m, $s;
 say $res;
 
-my $a = Angle.new: :alpha($d);
-say $a.Str;
+my $a = Angle.new($d);
+say $a.cout;
 
 
