@@ -1,14 +1,13 @@
 =begin pod
 
-=head1 NAME
+=head1 DateTime::Julian
 
-DateTime::Julian - Provides routines to use astronomical Julian dates (sometimes called
+Provides routines to use astronomical Julian dates (sometimes called
 I<Julian day numbers>)
 
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
-
 use DateTime::Julian;
 my $jd = nnnn.nnnn; # Julian date for some event
 my $utc = DateTime::Julian.new: :juliandate($jd);
@@ -86,27 +85,5 @@ Tom Browder <tbrowder@cpan.org>
 =head1 COPYRIGHT AND LICENSE
 
 Copyright E<0x00a9> 2021 Tom Browder
-
-=head1 Notes
-
-1. A I<proleptic calendar>, according to Wikipedia, "is a calendar that is applied to dates before its introduction."
-
-=head1 References
-
-1. I<Astronomy on the Personal Computer>, Oliver Montenbruck and Thomas Pfleger, Springer, 2000.
-
-2. I<Celestial Calculations: A Gentle Introduction to Computational Astronomy>, J. L. Lawrence, The MIT Press, 2019.
-
-3. I<Astro::Montenbruck>, Sergey Krushinsky, CPAN.
-
-=head1 AUTHOR
-
-Tom Browder <tbrowder@cpan.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright E<0x00a9> 2021 Tom Browder
-
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
 
 =end pod

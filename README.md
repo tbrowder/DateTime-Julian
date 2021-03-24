@@ -1,9 +1,9 @@
 [![Actions Status](https://github.com/tbrowder/DateTime-Julian/workflows/test/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions)
 
-NAME
-====
+DateTime::Julian
+================
 
-DateTime::Julian - Provides routines to use astronomical Julian dates (sometimes called *Julian day numbers*)
+Provides routines to use astronomical Julian dates (sometimes called *Julian day numbers*)
 
 SYNOPSIS
 ========
@@ -67,30 +67,4 @@ COPYRIGHT AND LICENSE
 =====================
 
 Copyright © 2021 Tom Browder
-
-Notes
-=====
-
-1. A *proleptic calendar*, according to Wikipedia, "is a calendar that is applied to dates before its introduction."
-
-References
-==========
-
-1. *Astronomy on the Personal Computer*, Oliver Montenbruck and Thomas Pfleger, Springer, 2000.
-
-2. *Celestial Calculations: A Gentle Introduction to Computational Astronomy*, J. L. Lawrence, The MIT Press, 2019.
-
-3. *Astro::Montenbruck*, Sergey Krushinsky, CPAN.
-
-AUTHOR
-======
-
-Tom Browder <tbrowder@cpan.org>
-
-COPYRIGHT AND LICENSE
-=====================
-
-Copyright © 2021 Tom Browder
-
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
 
