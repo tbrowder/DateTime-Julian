@@ -1,8 +1,8 @@
 =begin pod
 
-=head1 DateTime::Julian
+=head1 NAME
 
-Provides routines to use astronomical Julian dates (sometimes called
+B<DateTime::Julian> - Provides routines to use astronomical Julian dates (sometimes called
 I<Julian day numbers>)
 
 =head1 SYNOPSIS
@@ -20,7 +20,7 @@ my $lon = -86.234; # local observer's longitude;
 my $lst = $utc.lst: :$lon; 
 =end code
 
-=head1 DateTime::Julian
+=head1 DESCRIPTION
 
 Module B<DateTime::Julian> defines a class (inherited from a Raku I<DateTime> class) that
 is usually instantiated from a I<Julian date>, although it can
@@ -62,9 +62,9 @@ for dealing with astronomy and predicting object positions, especially
 the Sun and Moon, for local observation and producing astronomical
 almanacs.
 
-=head2 Class DateTime::Julian methods
+=head1 Class DateTime::Julian methods
 
-=head2 DateTime::Julian routines
+=head1 DateTime::Julian routines
 
 =head1 Notes
 

@@ -1,9 +1,9 @@
 [![Actions Status](https://github.com/tbrowder/DateTime-Julian/workflows/test/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions)
 
-DateTime::Julian
-================
+NAME
+====
 
-Provides routines to use astronomical Julian dates (sometimes called *Julian day numbers*)
+**DateTime::Julian** - Provides routines to use astronomical Julian dates (sometimes called *Julian day numbers*)
 
 SYNOPSIS
 ========
@@ -21,8 +21,8 @@ my $lon = -86.234; # local observer's longitude;
 my $lst = $utc.lst: :$lon;
 ```
 
-DateTime::Julian
-================
+DESCRIPTION
+===========
 
 Module **DateTime::Julian** defines a class (inherited from a Raku *DateTime* class) that is usually instantiated from a *Julian date*, although it can also be instantiated by any of the methods described in the Raku documentation for a *DateTime* class;
 
@@ -39,10 +39,10 @@ The following methods and routines were developed from several sources including
 The main purpose of this module is to simplify time and handling for this author who still finds Julian dates to be somewhat mysterious, but absolutely necessary for dealing with astronomy and predicting object positions, especially the Sun and Moon, for local observation and producing astronomical almanacs.
 
 Class DateTime::Julian methods
-------------------------------
+==============================
 
 DateTime::Julian routines
--------------------------
+=========================
 
 Notes
 =====
