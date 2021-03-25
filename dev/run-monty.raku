@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 
-use lib <./.>;
-use APC;
+use lib <. ../lib>;
+use DateTime::Julian::APC :ALL;
 
 # use each func
 my $x = 16.23;
