@@ -137,7 +137,7 @@ sub gen-test2($fh, @T, :$debug) {
     my $ntests = @T.elems;
     $fh.say: qq:to/HERE/;
     use Test;
-    use DateTime::APC :ALL;
+    use DateTime::Julian::APC :ALL;
 
     plan $ntests;
 
