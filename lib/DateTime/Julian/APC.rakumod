@@ -2,7 +2,16 @@ unit module DateTime::Julian::APC;
 
 #| This code is a Raku version of some of the algorithms described
 #| in "Astronomy on the Personal Computer" by Oliver Montenbruck
-#| and Thomas Pfleger.
+#| and Thomas Pfleger. It was generated from the descriptions
+#| in the book with additions and modifications by this author
+#| to take advantage of Raku features. In addition, some 
+#| routines have alias names to fit the author's style of coding,
+#| e.g., kebob- and lower-case names.
+#|
+#| Export tags have been added to indicate the types of routines:
+#|   :apc-time
+#|   :apc-position
+#|   :apc-math
 
 # some constants
 # from pp. 7-8:
@@ -16,17 +25,18 @@ constant c-light  is export(:apc-position) = 173.14; # AU/d
 constant MJDdelta is export(:apc-time) = 2_400_000.5; 
 
 # p. 8
-sub Frac(Real \x --> Real) is export(:Frac) {
+sub Frac(Real \x --> Real) is export(:apc-math) {
     x - x.floor
 }
 
 # p. 8
-sub Modulo(Real \x, Real \y --> Real) is export(:Modulo) {
+sub Modulo(Real \x, Real \y --> Real) is export(:apc-math) {
     y * Frac(x/y)
 }
 
 # p. 9
-sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:Ddd) {
+sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:apc-position) {
+    # max of 360 degrees
     my $sign = (D < 0 or M < 0 or S < 0) ?? -1 !! 1;
     if $debug {
         note qq:to/HERE/;
@@ -39,12 +49,19 @@ sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:Ddd) {
             S.abs/60.0 : {S.abs/3600.0}                                                                            
         HERE
     }
-    $sign * (D.abs + M.abs/60.0 + S.abs/3600.0)
+    #$sign * (D.abs + M.abs/60.0 + S.abs/3600.0)
+    # output should not exceed 360
+    my $ang = D.abs + M.abs/60.0 + S.abs/3600.0;
+    $ang %= 360 if $ang > 360;
+    $sign * $ang
 }
 
 # p. 9
-sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:DMS) {
+sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:apc-position) {
     my $x = Dd.abs;
+    # max of 360 degrees
+    $x %= 360 if $x > 360;
+
     $D = $x.Int;
 
     $x = ($x - $D) * 60.0;
