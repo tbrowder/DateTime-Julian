@@ -1,32 +1,32 @@
 unit module DateTime::Julian::APC;
 
-#| This code is a Raku version of the algorithms described
+#| This code is a Raku version of some of the algorithms described
 #| in "Astronomy on the Personal Computer" by Oliver Montenbruck
 #| and Thomas Pfleger.
 
 # some constants
 # from pp. 7-8:
-constant pi2      is export = 2.0 * pi;
-constant Rad      is export = pi / 180.0;
-constant Deg      is export = 180.0 / pi;
-constant Arcs     is export = 3_600.0 * 180.0 * pi;
-constant AU       is export = 149_597_870.0; # kilometers
-constant c-light  is export = 173.14; # AU/d
+constant pi2      is export(:apc-position) = 2.0 * pi;
+constant Rad      is export(:apc-position) = pi / 180.0;
+constant Deg      is export(:apc-position) = 180.0 / pi;
+constant Arcs     is export(:apc-position) = 3_600.0 * 180.0 * pi;
+constant AU       is export(:apc-position) = 149_597_870.0; # kilometers
+constant c-light  is export(:apc-position) = 173.14; # AU/d
 # from p. 14 in subs mjd2jd and jd2mjd:
-constant MJDdelta is export = 2_400_000.5; 
+constant MJDdelta is export(:apc-time) = 2_400_000.5; 
 
 # p. 8
-sub Frac(Real \x --> Real) is export {
+sub Frac(Real \x --> Real) is export(:Frac) {
     x - x.floor
 }
 
 # p. 8
-sub Modulo(Real \x, Real \y --> Real) is export {
+sub Modulo(Real \x, Real \y --> Real) is export(:Modulo) {
     y * Frac(x/y)
 }
 
 # p. 9
-sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export {
+sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:Ddd) {
     my $sign = (D < 0 or M < 0 or S < 0) ?? -1 !! 1;
     if $debug {
         note qq:to/HERE/;
@@ -43,7 +43,7 @@ sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export {
 }
 
 # p. 9
-sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export {
+sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:DMS) {
     my $x = Dd.abs;
     $D = $x.Int;
 
@@ -65,7 +65,7 @@ sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export {
 }
 
 # p. 9
-enum AngleFormat is export ( 
+enum AngleFormat is export(:apc-position) ( 
     Dd      => 1, # decimal repr
     DMM     => 2, # deg and whole min of arc
     DMMm    => 3, # deg and min of arc in decimal repr
@@ -83,9 +83,9 @@ enum AngleFormat is export (
 #   '    %2d %5.2f'   [4 leading spaces]
 #   '    %2d %2d %2d' [4 leading spaces]
 #   '%3d %2d %5.2f'
-sub Angle(Real $angle, AngleFormat = Dd) is export {
+sub Angle(Real $angle, AngleFormat = Dd) is export(:apc-position) {
 }
-class Angle is export {
+class Angle is export(:apc-position) {
     has Real $.angle;
     has AngleFormat $.Format = Dd;
     method new($angle, AngleFormat $Format = Dd) {
@@ -118,12 +118,12 @@ class Angle is export {
 
 # p. 14
 # MJD is total number of days elapsed since 1858-11-17T00:00
-sub mjd2jd($mjd) is export {
+sub mjd2jd($mjd) is export(:apc-time) {
     $mjd + MJDdelta
 }
 
 # p. 14
-sub jd2mjd($jd) is export {
+sub jd2mjd($jd) is export(:apc-time) {
     $jd - MJDdelta
 }
 
@@ -131,7 +131,7 @@ sub jd2mjd($jd) is export {
 # Modified Julian Date from calendar date and time
 sub Mjd(Int $Year is copy, Int $Month is copy, Int \Day,
         Int \Hour = 0, Int \Min = 0, Real \Sec = 0.0 
-        --> Real) is export {
+        --> Real) is export(:apc-time) {
 
     if $Month <= 2 {
         $Month += 12;
@@ -159,7 +159,7 @@ sub Mjd(Int $Year is copy, Int $Month is copy, Int \Day,
 multi sub CalDat(
     Real \Mjd,
     Int $Year is rw, Int $Month is rw, Int $Day is rw, Real $Hour is rw
-    ) is export {
+    ) is export(:apc-time) {
     # convert Julian day number to calendar date
     my \a = Mjd + 2_400_001.0;
     my ($b, $c);
@@ -191,14 +191,14 @@ multi sub CalDat(
     Real \Mjd,
     Int $Year is rw, Int $Month is rw, Int $Day is rw, 
     Int $Hour is rw, Int $Min is rw, Real $Sec is rw
-    ) is export {
+    ) is export(:apc-time) {
     my Real $Hours;
     CalDat Mjd, $Year, $Month, $Day, $Hours;
     DMS $Hours, $Hour, $Min, $Sec;
 }
  
 # p. 17
-enum TimeFormat is export (
+enum TimeFormat is export(:apc-time) (
     None   => 1, # no time, date only
     DDd    => 2, # output time as fraction of a day
     HHh    => 3, # output time as hours with one decimal place
@@ -207,9 +207,9 @@ enum TimeFormat is export (
 );
 
 # p. 16
-sub Angle(Real $hour, TimeFormat = HHMMSS) is export {
+sub Time(Real $hour, TimeFormat = HHMMSS) is export(:apc-time) {
 }
-class Time is export {
+class Time is export(:apc-time) {
     has Real $.Hour;
     has TimeFormat $.Format = HHMMSS;
     method new(Real $Hour, TimeFormat $Format = HHMMSS) {
@@ -240,9 +240,9 @@ class Time is export {
 # p. 16
 # NOTE class 'Datetime' is renamed from the original name to avoid 
 # conflict with Raku's DateTime class.
-sub Datetime(Real $Mjd, TimeFormat = None) is export {
+sub Datetime(Real $Mjd, TimeFormat = None) is export(:apc-time) {
 }
-class Datetime is export {
+class Datetime is export(:apc-time) {
     has Real $.Mjd;
     has TimeFormat $.Format = None;
     method new(Real $Mjd, TimeFormat $Format = HHMMSS) {
