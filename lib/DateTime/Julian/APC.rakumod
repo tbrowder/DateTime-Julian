@@ -36,7 +36,7 @@ sub Modulo(Real \x, Real \y --> Real) is export(:apc-math) {
 
 # p. 9
 sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:apc-position) {
-    # max of 360 degrees
+    # max of 360 degrees for output
     my $sign = (D < 0 or M < 0 or S < 0) ?? -1 !! 1;
     if $debug {
         note qq:to/HERE/;
@@ -93,19 +93,24 @@ enum AngleFormat is export(:apc-position) (
 # pp. 9-10
 # TODO complete the class output formats:
 #   also, these classes may be better used as multi subs, depending on use in real
-#   code (I can I use both with the same name?)
+#   code (I can use both with the same name)
 #   12 chars??
 #   '       %5.2f'    [7 leading spaces]
 #   '       %2d %2d'  [7 leading spaces]
 #   '    %2d %5.2f'   [4 leading spaces]
 #   '    %2d %2d %2d' [4 leading spaces]
 #   '%3d %2d %5.2f'
-sub Angle(Real $angle, AngleFormat = Dd) is export(:apc-position) {
+sub Angle(Real $angle is copy, AngleFormat = Dd) is export(:apc-position) {
+    # max of 360 degrees
+    $angle %= 360 if $angle > 360:
+    
 }
 class Angle is export(:apc-position) {
     has Real $.angle;
     has AngleFormat $.Format = Dd;
-    method new($angle, AngleFormat $Format = Dd) {
+    method new($angle is copy, AngleFormat $Format = Dd) {
+        # max of 360 degrees
+        $angle %= 360 if $angle > 360:
         return self.bless(:$angle, :$Format)
     }
     method Set(AngleFormat $Format = Dd) {
