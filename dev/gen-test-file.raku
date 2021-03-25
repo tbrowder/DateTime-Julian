@@ -1,7 +1,8 @@
 #!/usr/bin/env raku
 
-my $ifil = 'jpl-test-data.dat';
-my $ofil = '02-jpl-time-tests.t';
+my $ifil  = 'jpl-test-data.dat';
+my $ofil2 = '02-APC-jpl-time-tests.t';
+my $ofil3 = '03-DateTime-Julian-jpl-time-tests.t';
 
 class T {
     has $.era  is rw;
@@ -38,9 +39,10 @@ if not @*ARGS {
 
         $ifil
 
-    and creates a draft test file at:
+    and creates draft test files at:
 
-        $ofil
+        $ofil2
+        $ofil3
     HERE
     exit;
 }
@@ -50,6 +52,7 @@ for @*ARGS {
     when /:i ^d/ { $debug = 1 }
 }
 
+# collect the test data
 my $in-block = 0;
 my $t; # class T object
 my @T;
@@ -114,15 +117,57 @@ if $debug {
     }
 }
 
-my $fh = open $ofil, :w;
-gen-test $fh, @T, :$debug;
+my @ofils;
 
-say "Normal end. See test file '$ofil'.";
+my $fh2 = open $ofil2, :w;
+@ofils.push: $ofil2;
+gen-test2 $fh2, @T, :$debug;
 
-sub gen-test($fh, @T, :$debug) {
+my $fh3 = open $ofil3, :w;
+@ofils.push: $ofil3;
+gen-test3 $fh3, @T, :$debug;
 
+say "Normal end.";
+my $s = @ofils.elems > 1 ?? 's' !! '';
+say "See output file$s:";
+say "  $_" for @ofils;
+
+sub gen-test2($fh, @T, :$debug) {
+    # this will have to be increased as more tests are added:
     my $ntests = @T.elems;
+    $fh.say: qq:to/HERE/;
+    use Test;
+    use DateTime::APC :ALL;
 
+    plan $ntests;
+
+    my \%jpl =
+        # using test data from the JPL website:
+        #     https://ssd.jpl.nasa.gov/tc.cgi
+    HERE
+    for @T -> $t {
+        $fh.say: "    '{$t.dt}' => [{$t.jd}, '{$t.dow}'],";
+    }
+    $fh.say: ";\n";
+
+    $fh.say: q:to/HERE/;
+    for %jpl.keys.sort -> $ut {
+        # with key and value JPL test data
+        my $jd  = %jpl{$ut}[0];
+        my $dow = %jpl{$ut}[1];
+
+        # the local tests:
+        =begin comment
+        my $ut-dt = DateTime::Julian.new: $ut;
+        my $jd-dt = DateTime::Julian.new: :juliandate($jd);
+        is $ut-dt, $jd-ut;
+        =end comment
+    }
+    HERE
+}
+sub gen-test3($fh, @T, :$debug) {
+    # this will have to be increased as more tests are added:
+    my $ntests = @T.elems;
     $fh.say: qq:to/HERE/;
     use Test;
     use DateTime::Julian :ALL;
@@ -130,19 +175,20 @@ sub gen-test($fh, @T, :$debug) {
     plan $ntests;
 
     my \%jpl =
-        # tests from the JPL website:
+        # using test data from the JPL website:
         #     https://ssd.jpl.nasa.gov/tc.cgi
     HERE
-
     for @T -> $t {
         $fh.say: "    '{$t.dt}' => [{$t.jd}, '{$t.dow}'],";
     }
-    $fh.say: ";";
+    $fh.say: ";\n";
 
     $fh.say: q:to/HERE/;
     for %jpl.keys.sort -> $ut {
+        # with key and value JPL test data:
         my $jd  = %jpl{$ut}[0];
         my $dow = %jpl{$ut}[1];
+
         my $ut-dt = DateTime::Julian.new: $ut;
         my $jd-dt = DateTime::Julian.new: :juliandate($jd);
         is $ut-dt, $jd-ut;
