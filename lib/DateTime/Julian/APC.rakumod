@@ -58,7 +58,9 @@ sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:apc-position) {
 }
 
 # p. 9
-sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:apc-position) {
+sub DMS(Real \Dd, 
+    Int $D is rw, Int $M is rw, Real $S is rw,
+    :$debug) is export(:apc-position) {
     my $x = Dd.abs;
     # max of 360 degrees for angle use
     # (but what if it's being used for JD or MJD?)
@@ -87,6 +89,9 @@ sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:apc-posi
         else {
             $S *= -1.0;
         }
+    }
+    if $debug {
+        note "DEBUG output from end of DMS: Dd ({Dd}) => $D  $M  $S";
     }
 }
 
@@ -194,43 +199,34 @@ sub Mjd(Int $Year is copy, Int $Month is copy, Int \Day,
 #     calendar date components
 #     decimal hours
 # Raku wrapper
-multi sub mjd2dt(
-    :$mjd!, 
-    :$year! is copy, :$month! is copy, :$day! is copy, :$hour! is copy,
-    :$debug --> DateTime) is export(:raku) {
-
-    # collect results
-    CalDat $mjd, $year, $month, $day, $hour;
-
-    # from the results, create and return a DateTime object
-    my $dt = DateTime.new: :$year, :$month, :$day;
-    # add the seconds (the 'Duration')
-    $dt += $hour * 3600; # 3600 sec/hour
-    return $dt;
-}
-
 multi sub CalDat(
     Real \Mjd,
-    Int $Year is rw, Int $Month is rw, Int $Day is rw, Real $Hour is rw
+    Int $Year is rw, Int $Month is rw, Int $Day is rw, Real $Hour is rw,
+    :$debug
     ) is export(:apc-time) {
     # convert Julian day number to calendar date
-    my \a = Mjd + 2_400_001.0;
-    my ($b, $c);
+    my Int \a = Int(Mjd + 2_400_001.0);
+    my (Int $b, Int $c);
     if a < 2_299_161 { # Julian calendar
         $b = 0;
-        $c = a + 1524;
+        $c = a + 1_524;
     }
-    else {             # Gregirian calendar
-        $b = (a - 1_867_216.25) / 36_524.25;
+    else {             # Gregorian calendar
+        $b = Int((a - 1_867_216.25) / 36_524.25);
+        #$c = a + $b - ($b/4) + 1_525;
+        $c = a + $b - ($b div 4) + 1_525;
     }
-    my \d = ($c - 122.1) / 365.25;
-    my \e = 365 * d + d/4;
-    my \f = ($c - e) / 30.6001;
+    my Int \d = Int(($c - 122.1) / 365.25);
+    #my Int \e = 365 * d + d/4;
+    my Int \e = 365 * d + d div 4;
+    my Int \f = Int(($c - e) / 30.6001);
 
     # calculate the returned values
-    $Day = $c - e - Int(30.6001 * f);
-    $Month = f - 1 - 12 * (f/14);
-    $Year = d - 4_715 - (7 + $Month)/10;
+    $Day   = $c - e - Int(30.6001 * f);
+    #$Month = f - 1 - 12 * (f/14);
+    $Month = f - 1 - 12 * (f div 14);
+    #$Year  = d - 4_715 - ((7 + $Month)/10);
+    $Year  = d - 4_715 - ((7 + $Month) div 10);
     my \FracOfDay = Mjd - floor(Mjd);
     $Hour = 24.0 * FracOfDay; 
 }
@@ -241,48 +237,41 @@ multi sub CalDat(
 #     calendar date components
 #     time components
 # Raku wrappers
-multi sub jd2dt(:$jd, *%args --> DateTime) is export(:raku) {
+sub jd2dt(:$jd, 
+    --> DateTime) is export(:raku) {
     my $mjd = jd2mjd $jd;
-    
-    my $year  = %args<year>;
-    my $month = %args<month>;
-    my $day   = %args<day>;
-    my $hour  = %args<hour>;
-
-    my $minute = %args<minute>;
-    my $second = %args<second>;
-
-    my DateTime $dt;
-    if %args<second>:exists {
-        mjd2dt :$mjd, :$year, :$month, :$day, :$hour, :$minute, :$second; 
-    }
-    else {
-        mjd2dt :$mjd, :$year, :$month, :$day, :$hour; 
-    }
-    
+    mjd2dt :$mjd; 
 }
 
-multi sub mjd2dt(
+sub mjd2dt(
     :$mjd!, 
-    :$year! is copy, :$month! is copy, :$day! is copy, 
-    :$hour! is copy, :$minute! is copy, :$second! is copy,
     :$debug --> DateTime) is export(:raku) {
+
+    my Int $year;
+    my Int $month;
+    my Int $day;
+    my Int $hour;
+    my Int $minute;
+    my Real $second;
 
     # collect results
     CalDat $mjd, $year, $month, $day, $hour, $minute, $second;
 
     # from the results, create and return a DateTime object
     my $dt = DateTime.new: :$year, :$month, :$day, :$hour, :$minute, :$second;
+    return $dt;
 }
 
 multi sub CalDat(
     Real \Mjd,
     Int $Year is rw, Int $Month is rw, Int $Day is rw, 
-    Int $Hour is rw, Int $Min is rw, Real $Sec is rw
+    Int $Hour is rw, Int $Min is rw, Real $Sec is rw,
+    :$debug,
     ) is export(:apc-time) {
     my Real $Hours;
     CalDat Mjd, $Year, $Month, $Day, $Hours;
-    DMS $Hours, $Hour, $Min, $Sec;
+    DMS $Hours, $Hour, $Min, $Sec, :$debug;
+    # no explicitly returned values
 }
  
 # p. 17
@@ -296,7 +285,7 @@ enum TimeFormat is export(:apc-time) (
 );
 
 # p. 16
-sub Time(Real $hour is copy, TimeFormat $format = HHMMSS) is export(:apc-time) {
+sub Time(Real $hour is copy, TimeFormat $format = HHMMSS, :$debug) is export(:apc-time) {
     # first get the time decomposed, use routine DMS 
     #   sub DMS(Real \Dd, Int $D is rw, Int $M is rw, Real $S is rw) is export(:apc-position) {
     # assume the hour input is < 24 (i.e., less than a day)
@@ -311,7 +300,7 @@ sub Time(Real $hour is copy, TimeFormat $format = HHMMSS) is export(:apc-time) {
     }
 
     my (Int $h, Int $m, Real $s);
-    DMS $hour, $h, $m, $s;
+    DMS $hour, $h, $m, $s, :$debug;
     given $format {
         when /None/   { # no time, date only
         }
