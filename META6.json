@@ -6,7 +6,6 @@
   "build-depends": [
   ],
   "depends": [
-    "Math::FractionalPart"
   ],
   "description": "blah blah blah",
   "license": "Artistic-2.0",
@@ -19,8 +18,14 @@
   ],
   "source-url": "https://github.com/tbrowder/DateTime-Julian.git",
   "tags": [
+    "Julian day number",
+    "astronomy",
+    "time",
+    "solar",
+    "calendar"
   ],
   "test-depends": [
+    "Math::FractionalPart"
   ],
   "version": "0.0.1"
 }
