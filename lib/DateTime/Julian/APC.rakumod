@@ -61,7 +61,7 @@ sub Ddd(Int \D, Int \M, Real \S, :$debug --> Real) is export(:apc-position) {
 sub DMS(Real \Dd, 
     Int $D is rw, Int $M is rw, Real $S is rw,
     :$debug) is export(:apc-position) {
-    my $x = Dd.abs;
+    my Real $x = Dd.abs;
     # max of 360 degrees for angle use
     # (but what if it's being used for JD or MJD?)
     if $x > 360 {
@@ -165,7 +165,7 @@ sub jd2mjd($jd) is export(:apc-time, :raku) {
 
 # p. 15
 # Modified Julian Date from calendar date and time
-# Raku wrapper
+# Raku wrappers
 sub cal2mjd(Int :$year, Int :$month, Int :$day,
             Int :$hour = 0, Int :$minute = 0, Real :$second = 0.0,
             :$debug = 0 --> Real) is export(:raku) {
@@ -179,15 +179,15 @@ sub Mjd(Int $Year is copy, Int $Month is copy, Int \Day,
         $Month += 12;
         --$Year;
     }
-    my $b;
+    my Int $b;
     if (10_000 * $Year + 100 * $Month + Day) <= 15_821_004 {
-        $b = -2 + (($Year + 4_716)/4) - 1_179; # Julian calendar
+        $b = -2 + (($Year + 4_716) div 4) - 1_179;              # Julian calendar
     }
     else {
-        $b = ($Year/400) - ($Year/100) + ($Year/4); # Gregorian calendar
+        $b = ($Year div 400) - ($Year div 100) + ($Year div 4); # Gregorian calendar
     }
     
-    my \MjdMidnight = 365 * $Year - 679_004 + $b + Int(30.6001 * ($Month + 1)) + Day;
+    my Int \MjdMidnight = 365 * $Year - 679_004 + $b + Int(30.6001 * ($Month + 1)) + Day;
     my \FracOfDay = Ddd(Hour, Min, Sec) / 24.0;
 
     return MjdMidnight + FracOfDay;
@@ -204,6 +204,7 @@ multi sub CalDat(
     Int $Year is rw, Int $Month is rw, Int $Day is rw, Real $Hour is rw,
     :$debug
     ) is export(:apc-time) {
+
     # convert Julian day number to calendar date
     my Int \a = Int(Mjd + 2_400_001.0);
     my (Int $b, Int $c);
@@ -217,7 +218,6 @@ multi sub CalDat(
         $c = a + $b - ($b div 4) + 1_525;
     }
     my Int \d = Int(($c - 122.1) / 365.25);
-    #my Int \e = 365 * d + d/4;
     my Int \e = 365 * d + d div 4;
     my Int \f = Int(($c - e) / 30.6001);
 
@@ -225,7 +225,6 @@ multi sub CalDat(
     $Day   = $c - e - Int(30.6001 * f);
     #$Month = f - 1 - 12 * (f/14);
     $Month = f - 1 - 12 * (f div 14);
-    #$Year  = d - 4_715 - ((7 + $Month)/10);
     $Year  = d - 4_715 - ((7 + $Month) div 10);
     my \FracOfDay = Mjd - floor(Mjd);
     $Hour = 24.0 * FracOfDay; 

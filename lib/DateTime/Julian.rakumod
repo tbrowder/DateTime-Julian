@@ -1,37 +1,81 @@
 #unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER>;
-unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> does Dateish is DateTime;
-use Math::FractionalPart :afrac;
+#unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> does Dateish is DateTime;
+unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> is DateTime is export;
 
-#has DateTime $.datetime;
-has Real $.juliandate;
+use DateTime::Julian::APC :ALL;
+
+has $.juliandate;
+=begin comment
+has Real $.modifiedjuliandate;
+# aliases
+has Real $.jdate;
+has Real $.mjdate;
+=end comment
 
 # other desirable attributes
 
-submethod TWEAK {
-    # set the DateTime attributes from the Julian date input
-    my $dt   = jd2utc $!juliandate;
-    $!year   = $dt.year;
-    $!month  = $dt.month;
-    $!day    = $dt.day;
-    self.hour   = $dt.hour;
-    self.minute = $dt.minute;
-    self.second = $dt.second;
+submethod BUILD(:$!juliandate) {
+}
 
-    =begin comment
-    if not self.datetime.defined and not self.juliandate.defined {
-        die "FATAL: You must defined one only of 'datetime' or 'juliandate'";
+submethod TWEAK {
+    my $new-is-julian = 0;
+=begin comment
+    # choose the input to use and fill in the remainder
+    if $!juliandate.defined {
+        $!jdate = $!juliandate;
+        $!mjdate = jd2mjd $!jdate;
+        $!modifiedjuliandate = $!mjdate;
+        ++$new-is-julian;
     }
-    if self.datetime.defined and self.juliandate.defined {
-        die "FATAL: You must define one only of 'datetime' or 'juliandate'";
+    elsif $!jdate.defined {
+        $!juliandate = $!jdate;
+        $!mjdate = jd2mjd $!jdate;
+        $!modifiedjuliandate = $!mjdate;
+        ++$new-is-julian;
     }
-    if self.juliandate.defined {
-        $!datetime = jd2utc self.juliandate;
+    elsif $!modifiedjuliandate.defined {
+        $!mjdate = $!modifiedjuliandate;
+        $!jdate = mjd2jd $!mjdate;
+        $!juliandate = $!jdate;
+        ++$new-is-julian;
+    }
+    elsif $!mjdate.defined {
+        $!modifiedjuliandate = $!mjdate;
+        $!jdate = mjd2jd $!mjdate;
+        $!juliandate = $!jdate;
+        ++$new-is-julian;
     }
     else {
-        $!juliandate = utc2jd self.datetime;
+        # we must have been instantiated via the DateTime methods
+        # which should not be a show-stopper
+        $!mjdate = cal2mjd :year(self.year), :month(self.month), :day(self.day), 
+                           :hour(self.hour), :minute(self.minute), :second(self.second);
+        $!modifiedjuliandate = $!mjdate;
+        $!jdate = mjd2jd $!mjdate;
+        $!juliandate = $!jdate;
     }
-    =end comment
+=end comment
+
+    if $new-is-julian {
+        # now we use jdate or mjdate as needed
+        # to set the DateTime attributes from the Julian date input
+        my $dt   = jd2dt $!juliandate;
+        self.year   = $dt.year;
+        self.month  = $dt.month;
+        self.day    = $dt.day;
+        self.hour   = $dt.hour;
+        self.minute = $dt.minute;
+        self.second = $dt.second;
+    }
 }
+
+our $formatter is export(:formatter) = sub ($self) {
+    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2fZ",
+        .year, .month, .day, .hour, .minute, .second
+        given $self;
+}
+
+=finish
 
 multi sub utc2jd(
     DateTime $dt,
@@ -63,12 +107,6 @@ multi sub utc2jd(
     :$is-julian-calendar = False --> Real) is export(:utc2jd) {
     my $dt = DateTime.new: $utc;
     return utc2jd $dt, :$is-julian-calendar;
-}
-
-our $formatter is export(:formatter) = sub ($self) {
-    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2fZ",
-        .year, .month, .day, .hour, .minute, .second
-        given $self;
 }
 
 sub jd2utc(Real $jd is copy, :$is-julian-calendar = False --> DateTime) is export(:jd2utc) {
