@@ -8,9 +8,10 @@ class T {
     has $.era  is rw;
     has $.date is rw;
     has $.time is rw;
-    has $.dow  is rw;
+    has $.dow  is rw; # Monday, Tuesday, etc.
     has $.jd   is rw;
-    has $.dt   is rw; # the DateTime.Str repr
+    has $.dts  is rw; # the DateTime.Str repr
+    has $.day-of-week is rw; # DateTime number (Mon = 1, Sun = 7)
 }
 
 =begin comment
@@ -69,7 +70,7 @@ for $ifil.IO.lines {
         if $t {
             # assemble the dt value
             my $e = $t.era < 0 ?? '-' !! '+';
-            $t.dt = "{$e}{$t.date}T{$t.time}Z";
+            $t.dts = "{$e}{$t.date}T{$t.time}Z";
             @T.push: $t if $t;
         }
         $t = T.new;
@@ -98,6 +99,7 @@ for $ifil.IO.lines {
         # Day-of-Week: Thursday
         my $dow = ~$0;
         $t.dow  = $dow;
+        $t.day-of-week = get-dow-number $dow;
     }
     when /^ \h* (\d+ '.' \d+) \h+ UT/ {
         # 260423.9999999 UT
@@ -113,7 +115,7 @@ if $debug {
         say "  {$t.time}"; #{$t.dow}{$t.jd}"
         say "  {$t.dow}"; #{$t.jd}"
         say "  {$t.jd}";
-        say "  {$t.dt}";
+        say "  {$t.dts}";
     }
 }
 
@@ -132,11 +134,27 @@ my $s = @ofils.elems > 1 ?? 's' !! '';
 say "See output file$s:";
 say "  $_" for @ofils;
 
+sub get-dow-number($dow) {
+    given $dow {
+        when /:i ^mon/ { 1 }
+        when /:i ^tue/ { 2 }
+        when /:i ^wed/ { 3 }
+        when /:i ^thu/ { 4 }
+        when /:i ^fri/ { 5 }
+        when /:i ^sat/ { 6 }
+        when /:i ^sun/ { 7 }
+        default {
+            die "FATAL: Unknown day-of-week named '$_'";
+        }
+    }
+}
+
 sub gen-test2($fh, @T, :$debug) {
     # this will have to be increased as more tests are added:
-    my $ntests = @T.elems;
+    my $ntests = 2 * @T.elems;
     $fh.say: qq:to/HERE/;
     use Test;
+    use DateTime::Julian :formatter;
     use DateTime::Julian::APC :ALL;
 
     plan $ntests;
@@ -146,18 +164,53 @@ sub gen-test2($fh, @T, :$debug) {
         #     https://ssd.jpl.nasa.gov/tc.cgi
     HERE
     for @T -> $t {
-        $fh.say: "    '{$t.dt}' => [{$t.jd}, '{$t.dow}'],";
+        $fh.say: "    '{$t.dts}' => [{$t.jd}, '{$t.dow}', {$t.day-of-week} ],";
     }
     $fh.say: ";\n";
 
     $fh.say: q:to/HERE/;
     for %jpl.keys.sort -> $ut {
         # with key and value JPL test data
-        my $jd  = %jpl{$ut}[0];
-        my $dow = %jpl{$ut}[1];
+        my $jdin     = %jpl{$ut}[0];
+        my $dowin    = %jpl{$ut}[1];
+        my $downumin = %jpl{$ut}[2];
+        my $dtin     = DateTime.new: $ut, :$formatter;
+        my $mjdin    = cal2mjd :year($dtin.year), :month($dtin.month), :day($dtin.day), 
+                               :hour($dtin.hour), :minute($dtin.minute), :second($dtin.second);
 
         # the local tests:
+        my $dtout = jd2dt :jd($jdin);
+        is $dtout.day-of-week, $downumin, "dowin: $dowin $downumin out: {$dtout.day-of-week}";
+        # compare jds
+        my $mjdout   = cal2mjd :year($dtin.year), :month($dtin.month), :day($dtin.day), 
+                               :hour($dtin.hour), :minute($dtin.minute), :second($dtin.second);
+        my $jdout = mjd2jd $mjdout;
+        is $jdout, $jdin, "jd in: $jdin out: $jdout";
+
         =begin comment
+        my $dtout = DateTime::Julian.new: :juliandate($jd), :$formatter;
+        is $dtin, $dtout;
+        =end comment
+
+        =begin comment
+        my $jd2dt = jd2dt :jd($jd);
+        my $mjd = cal2mjd :year(self.year), :month(self.month), :day(self.day), 
+                      :hour(self.hour), :minute(self.minute), :second(self.second);
+        =end comment
+
+        =begin comment
+        method new(:$juliandate) {
+            my $dt = jd2dt :jd($jd);
+            self.DateTime::new(
+            :year($dt.year), :month($dt.month), :day($dt.day), 
+                      :hour($dt.hour), :minute($dt.minute), :second($dt.second));
+        }
+        submethod TWEAK() {
+            my $mjd = cal2mjd :year(self.year), :month(self.month), :day(self.day), 
+                      :hour(self.hour), :minute(self.minute), :second(self.second);
+            my $jd = mjd2jd $mjd;
+            $!juliandate = $jd;
+        }
         my $ut-dt = DateTime::Julian.new: $ut;
         my $jd-dt = DateTime::Julian.new: :juliandate($jd);
         is $ut-dt, $jd-ut;
@@ -179,7 +232,7 @@ sub gen-test3($fh, @T, :$debug) {
         #     https://ssd.jpl.nasa.gov/tc.cgi
     HERE
     for @T -> $t {
-        $fh.say: "    '{$t.dt}' => [{$t.jd}, '{$t.dow}'],";
+        $fh.say: "    '{$t.dts}' => [{$t.jd}, '{$t.dow}'],";
     }
     $fh.say: ";\n";
 
