@@ -1,4 +1,4 @@
 .precomp/
 /DateTime-Julian-*
-./dev/juliandate.t
+dev/juliandate.t
 
