@@ -1,69 +1,62 @@
 #!/usr/bin/env raku
+#
+use Text::Utils :strip-comment;
 
-use lib <./.>;
-#use MathUtils :ALL;
-#use TimeUtils :jd2cal, :cal2jd, :jd2cal2, :cal2jd2;
-use Time :hours2hms, :hms2days;
-use Math::FractionalPart :afrac;
+my $ifil  = './meeus/test-data.txt';
+my $debug = 0;
+if not @*ARGS {
+    say qq:to/HERE/;
+    Ugage: {$*PROGRAM.basename} go [debug]
 
-#note "DEBUG: early exit";exit;
-
-my %utc =
-    # tests from the JPL website:
-    #     https://ssd.jpl.nasa.gov/tc.cgi
-    # entered UTC, got Julian
-    '3501-08-15T12:00:00.00Z' => 3000000.0,
-    '3501-08-15T14:39:59.04Z' => 3000000.1111,
-    '3501-08-15T23:59:51.36Z' => 3000000.4999,
-    '3501-08-16T00:00:00.00Z' => 3000000.5,
-    '3501-08-16T00:00:00.86Z' => 3000000.50001,
-    '-3501-08-16T00:00:00.86Z' => 2000000.50001,
-;
-
-# reverse to test the key/values to ensure they round trip okay
-my %jd = %utc.invert;
-
-our $formatter is export(:formatter) = sub ($self) {
-    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2fZ",
-        .year, .month, .day, .hour, .minute, .second
-        given $self;
+    Tests sub jd2cal against Meeus's test data in
+    file '$ifil'.
+    HERE
+   
+    exit;
 }
 
-for %jd.keys.sort -> $jd {
-    my $in  = $jd;
-    my $exp = %jd{$jd};
-    #my ($year, $month, $day) = jd2cal $jd;
-    my ($year, $month, $day) = jd2cal $jd;
-
-    #say "fail:  '$in'   ne    '$out'" if $in ne $out;
-    say "input jd: '$jd'";
-
-    say "  y/m/d = $year $month $day";
-
-    next;
-
-    =begin comment
-    #say "  y/m/d = $year $month $day $hr";
-
-    # convert decimal hours to hms format
-    my ($hour, $minute, $second) = hours2hms $hr;
-    #say "     h/m/s = $hour  $minute $second";
-
-    # get a DateTime object
-    my $dt = DateTime.new: :$year, :$month, :$day, :$hour, :$minute, :$second, :$formatter;
-    say "   JPL     output: '$out'";
-    say "   jd2cal2 output: '{$dt.Str}'";
-    =end comment
-
+for @*ARGS {
+    when /^:i d/ {++$debug}
 }
 
-sub nplaces($x) {
-    my $frac = afrac $x;
-    if $frac == 0 {
-        return 0;
+my %t;
+my $nd = 0;
+for $ifil.IO.lines -> $line is copy {
+    $line = strip-comment $line;
+    next if $line !~~ /\S/;
+    note "DEBUG: line: '$line'" if $debug;
+    ++$nd;
+    my @w = $line.words;
+    my $y = @w.shift;
+    my $M = @w.shift;
+    my $m = mon2num $M;
+    my $d = @w.shift;
+    my $j = @w.shift;    
+    note "    DEBUG: y/m/d ($M) => jd : $y $m $d => $j" if $debug;
+
+    my ($ye, $mo, $da) = jd2cal $j;
+    say "JD $j ($y/$m/$d) => $ye/$mo/$da";
+}
+say "Normal end. Found $nd data points (expected 16).";
+
+sub mon2num($m) {
+    with $m {
+        when /^:i jan/ {  1 }
+        when /^:i feb/ {  2 }
+        when /^:i mar/ {  3 }
+        when /^:i apr/ {  4 }
+        when /^:i may/ {  5 }
+        when /^:i jun/ {  6 }
+        when /^:i jul/ {  7 }
+        when /^:i aug/ {  8 }
+        when /^:i sep/ {  9 }
+        when /^:i oct/ { 10 }
+        when /^:i nov/ { 11 }
+        when /^:i dec/ { 12 }
+        default {
+            die "FATAL: Unrecognized month named '$m'";
+        }
     }
-    my $nplaces = (($x - $x.truncate).abs).chars - 2;
-    $nplaces;
 }
 
 sub modf($x) {
@@ -71,14 +64,14 @@ sub modf($x) {
     # note the sign of $x is applied to BOTH parts
     my $int-part  = $x.Int;
     my $frac-part = $x - $int-part;
-    [$frac-part, $int-part];
+    $frac-part, $int-part;
 }
 
 sub jd2cal($jd, :$gregorian = True) {
     # Standard Julian Date for  31.12.1899 12:00 (astronomical epoch 1900.0)
     my constant $J1900 = 2415020;
     my ($f, $i) = modf( $jd - $J1900 + 0.5 );
-    note "DEBUG: input to modf: {$jd - $J1900 + 0.5} => \$f ($f), \$i ($i)" if 1;
+    note "DEBUG: input to modf: {$jd - $J1900 + 0.5} => \$f ($f), \$i ($i)" if $debug;
 
     if $gregorian && $i > -115860  {
         my $a = floor( $i / 36524.25 + 9.9835726e-1 ) + 14;
