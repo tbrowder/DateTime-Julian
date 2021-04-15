@@ -1,0 +1,33 @@
+# data from Meeus' "Astronomical Algorithms"
+#
+# 16 data points
+#
+# Gregorian date   Julian date
+2000 jan 1.5 2451 545.0
+
+1999 jan 1.0 2451 179.5
+
+1987
+1987
+
+1988
+1988
+
+1900
+
+1600
+1600
+
+837
+
+-123
+
+-122
+
+-1000
+-1000
+
+-1001
+
+-4712 jan 1.5 0.0
+

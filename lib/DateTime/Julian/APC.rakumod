@@ -214,16 +214,14 @@ multi sub CalDat(
     }
     else {             # Gregorian calendar
         $b = Int((a - 1_867_216.25) / 36_524.25);
-        #$c = a + $b - ($b/4) + 1_525;
         $c = a + $b - ($b div 4) + 1_525;
     }
     my Int \d = Int(($c - 122.1) / 365.25);
-    my Int \e = 365 * d + d div 4;
+    my Int \e = 365 * d + (d div 4);
     my Int \f = Int(($c - e) / 30.6001);
 
     # calculate the returned values
     $Day   = $c - e - Int(30.6001 * f);
-    #$Month = f - 1 - 12 * (f/14);
     $Month = f - 1 - 12 * (f div 14);
     $Year  = d - 4_715 - ((7 + $Month) div 10);
     my \FracOfDay = Mjd - floor(Mjd);

@@ -56,7 +56,8 @@ my %t =
 use Test;
 for %t.kv -> $utc, $jdin {
     my $dt = DateTime.new: $utc;
-    say "utc in: {$utc}";
+    say "=== utc in: {$utc}";
+    say "utc year in: {$dt.year}";
     say "dt  in: {$dt.utc}";
 
     my $mjdin = jd2mjd $jdin;
@@ -66,7 +67,14 @@ for %t.kv -> $utc, $jdin {
     my $jdout = mjd2jd $mjdout;
     say "mjdin: $mjdin => mjdout: $mjdout";
     say " jdin: $jdin  =>  jdout: $jdout";
+#    is-approx $jdin, $jdout;
 }
+
+# test the Mjd calc from the book
+my $tmjd = Mjd(1961, 1, 14,  3, 30, 10.0);
+my $tjd  = $tmjd + 2400000.5;
+say "tmjd: $tmjd";
+say "tjd:  $tjd";
 
 
 =finish

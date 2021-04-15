@@ -3,7 +3,8 @@
 say "NOTE: this test script has been turned off until needed again";
 exit;
 
-# NOTE: running this takes a bit less tha one minute in its present form
+# NOTE: running this takes a bit less than one minute in its present
+# form
 
 # based on email from Curt Tilmes:
 use LibCurl::Easy;
@@ -14,7 +15,7 @@ use DOM::Tiny;
 # '2000-01-20%2013:01:09';  # JPL format
 
 # get times around midnight and noon
-my @t = 
+my @t =
 '11:59:59.99',  # JPL format
 '12:00:00.00',  # JPL format
 '13:00:00.01',  # JPL format
@@ -39,7 +40,7 @@ my $fh = open $of, :w;
 my $era = 'BC';
 for @bc -> $d {
     for @t -> $t {
-        my $date = "$d\%20$t";        
+        my $date = "$d\%20$t";
         my $webpage = LibCurl::Easy.new(URL => 'https://ssd.jpl.nasa.gov/tc.cgi#top',
                       postfields => "era={$era}&cd={$date}&z1=0&u_cal=Update").perform.content;
         my $dom = DOM::Tiny.parse($webpage);
@@ -50,7 +51,7 @@ for @bc -> $d {
 $era = 'AD';
 for @ad -> $d {
     for @t -> $t {
-        my $date = "$d\%20$t";        
+        my $date = "$d\%20$t";
         my $webpage = LibCurl::Easy.new(URL => 'https://ssd.jpl.nasa.gov/tc.cgi#top',
                       postfields => "era={$era}&cd={$date}&z1=0&u_cal=Update").perform.content;
         my $dom = DOM::Tiny.parse($webpage);
