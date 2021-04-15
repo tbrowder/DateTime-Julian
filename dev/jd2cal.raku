@@ -39,6 +39,17 @@ for $ifil.IO.lines -> $line is copy {
 }
 say "Normal end. Found $nd data points (expected 16).";
 
+my $d0 = DateTime.new: :year(-4712), :month(1), :day(1), :hour(12);
+my $d1 = DateTime.new: :year(2000), :month(1), :day(1), :hour(12);
+my $ds = $d1 - $d0;
+my $dd = $ds/86400;
+say "does test JD (2451545) == $dd ?";
+
+my $days0 = $d0.daycount;
+my $days1 = $d1.daycount;
+my $ddays = $days1 - $days0;
+say "does test JD (2451545) == $ddays ?";
+
 sub mon2num($m) {
     with $m {
         when /^:i jan/ {  1 }
