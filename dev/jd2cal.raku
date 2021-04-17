@@ -2,7 +2,11 @@
 #
 use Text::Utils :strip-comment;
 
+use lib <./lib>;
+use Gen-Test :mon2num;
+
 my $ifil  = './meeus/test-data.txt';
+my $ofil  = './meeus/test-data-hash.txt';
 my $debug = 0;
 if not @*ARGS {
     say qq:to/HERE/;
@@ -36,6 +40,8 @@ for $ifil.IO.lines -> $line is copy {
 
     my ($ye, $mo, $da) = jd2cal $j;
     say "JD $j ($y/$m/$d) => $ye/$mo/$da";
+    # load the hash with the test data
+    %t{$j} = [$y, $m, $d, $M];
 }
 say "Normal end. Found $nd data points (expected 16).";
 
@@ -50,25 +56,28 @@ my $days1 = $d1.daycount;
 my $ddays = $days1 - $days0;
 say "does test JD (2451545) == $ddays ?";
 
-sub mon2num($m) {
-    with $m {
-        when /^:i jan/ {  1 }
-        when /^:i feb/ {  2 }
-        when /^:i mar/ {  3 }
-        when /^:i apr/ {  4 }
-        when /^:i may/ {  5 }
-        when /^:i jun/ {  6 }
-        when /^:i jul/ {  7 }
-        when /^:i aug/ {  8 }
-        when /^:i sep/ {  9 }
-        when /^:i oct/ { 10 }
-        when /^:i nov/ { 11 }
-        when /^:i dec/ { 12 }
-        default {
-            die "FATAL: Unrecognized month named '$m'";
-        }
-    }
+# output the hash into a txt file
+my $fh = open $ofil, :w;
+$fh.print: q:to/HERE/;
+    my %meeus-test-data = [
+HERE
+
+for %t.keys.sort -> $k {
+    my @v = @(%t{$k});
+    $fh.say: "         $k => [{@v[0]}, {@v[1]}, {@v[2]}, '{@v[3].tc}'],"; 
 }
+
+$fh.say: q:to/HERE/;
+    ];
+
+    # define some key epochs
+    constant JD 
+
+HERE
+$fh.close;
+say "See outout file '$ofil'";
+
+##### subs #####
 
 sub modf($x) {
     # splits $x into integer and fractional parts
