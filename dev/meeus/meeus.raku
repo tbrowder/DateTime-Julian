@@ -6,7 +6,7 @@ use lib <../lib>;
 use Gen-Test :mon2num;
 
 my $ifil  = 'test-data.txt';
-my $ofil  = 'test-data-hash.txt';
+my $ofil  = 'meeus-data.t';
 my $debug = 0;
 if not @*ARGS {
     say qq:to/HERE/;
@@ -25,7 +25,7 @@ for @*ARGS {
     when /^:i d/ {++$debug}
 }
 
-my %t;
+my @t;
 my $nd = 0;
 for $ifil.IO.lines -> $line is copy {
     $line = strip-comment $line;
@@ -42,14 +42,16 @@ for $ifil.IO.lines -> $line is copy {
     if @w.elems {
         my $s = @w.shift;
         $gregorian = False if $s ~~ /^:i j/;
+        note "DEBUG: gregorian = '{$gregorian}'" if $debug;
     }
 
     note "    DEBUG: y/m/d ($M) (Gregorian == $gregorian) => jd : $y $m $d => $j" if $debug;
 
     my ($ye, $mo, $da) = jd2cal $j, :$gregorian, :$debug;
     say "JD $j ($y/$m/$d) => $ye/$mo/$da";
-    # load the hash with the test data
-    %t{$j} = [$y, $m, $d, $M, $gregorian];
+
+    # load the test array with the test data
+    @t.push: [$j, $y, $m, $d, $M, $gregorian];
 }
 say "Normal end. Found $nd data points (expected 16).";
 
@@ -66,22 +68,28 @@ say "cmp DateTime daycounts, does test JD (2451545) == $ddays ?";
 
 # output the hash into a txt file
 my $fh = open $ofil, :w;
-$fh.print: q:to/HERE/;
-    my %meeus-test-data = [
+my $ndp = @t.elems;
+$fh.print: qq:to/HERE/;
+    my \%meeus-test-data = [
+        # $ndp data points
+        # Julian-date   Y   M  D      m    Gregorian?
 HERE
 
-for %t.keys.sort -> $k {
-    my @v = @(%t{$k});
-    $fh.say: "         $k => [{@v[0]}, {@v[1]}, {@v[2]}, '{@v[3].tc}'],"; 
+for @t -> $arr {
+    my @v = @($arr);
+    $fh.say: "        [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}, '{@v[4].tc}', {@v[5]}],"; 
 }
 
 $fh.say: q:to/HERE/;
     ];
+HERE
 
+=begin comment
     # define some key epochs
     constant JD 
 
 HERE
+=end comment
 $fh.close;
 say "See outout file '$ofil'";
 
@@ -103,11 +111,31 @@ sub jd0($year, :$gregorian = True, :$debug) {
     $jd0
 }
 
-sub cal2jd($jd, :$gregorian = True, :$debug) {
+sub cal2jd($y is copy, $m is copy, $d, :$gregorian = True, :$debug --> Real) {
     # from p. 60 in 1998 edition
+    if $m == 1 or $m == 2 {
+        $y -= 1;
+        $m += 12;
+    }
+    my \Y = $y;
+    my \M = $m;
+    my \D = $d;
+
+    my $b;
+    if $gregorian {
+        my $A = floor(Y/100);
+        $b = 2 - $A + floor($A/4);
+    }
+    else {
+        $b = 0;
+    }
+    my \B = $b;
+
+    my \JD = floor(365.25 * (Y + 4_716)) + floor(30.6001 * (M + 1)) + D + B - 1_524.5;
+    JD
 }
 
-sub jd2cal($jd, :$gregorian = True, :$debug) {
+sub jd2cal($jd, :$gregorian = True, :$debug --> List) {
     # from p. 63 in 1998 edition
     # valid only for positive JD
 
