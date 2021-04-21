@@ -1,0 +1,133 @@
+#!/usr/bin/env raku
+#
+use Text::Utils :strip-comment;
+
+use lib <../lib>;
+use Gen-Test :mon2num;
+
+my $ifil  = 'test-data.txt';
+my $ofil  = 'test-data-hash.txt';
+my $debug = 0;
+if not @*ARGS {
+    say qq:to/HERE/;
+    Ugage: {$*PROGRAM.basename} go [debug]
+
+    Tests subs jd2cal and cal2jd against Meeus's test data in
+    file '$ifil'.
+    HERE
+   
+    exit;
+}
+
+for @*ARGS {
+    when /^:i d/ {++$debug}
+}
+
+my %t;
+my $nd = 0;
+for $ifil.IO.lines -> $line is copy {
+    $line = strip-comment $line;
+    next if $line !~~ /\S/;
+    note "DEBUG: line: '$line'" if $debug;
+    ++$nd;
+    my @w = $line.words;
+    my $y = @w.shift;
+    my $M = @w.shift;
+    my $m = mon2num $M;
+    my $d = @w.shift;
+    my $j = @w.shift;    
+    note "    DEBUG: y/m/d ($M) => jd : $y $m $d => $j" if $debug;
+
+    my ($ye, $mo, $da) = jd2cal $j;
+    say "JD $j ($y/$m/$d) => $ye/$mo/$da";
+    # load the hash with the test data
+    %t{$j} = [$y, $m, $d, $M];
+}
+say "Normal end. Found $nd data points (expected 16).";
+
+my $d0 = DateTime.new: :year(-4712), :month(1), :day(1), :hour(12);
+my $d1 = DateTime.new: :year(2000), :month(1), :day(1), :hour(12);
+my $ds = $d1 - $d0;
+my $dd = $ds/86400;
+say "cmp DateTime instants, does test JD days (2451545) == $dd ?";
+
+my $days0 = $d0.daycount;
+my $days1 = $d1.daycount;
+my $ddays = $days1 - $days0;
+say "cmp DateTime daycounts, does test JD (2451545) == $ddays ?";
+
+# output the hash into a txt file
+my $fh = open $ofil, :w;
+$fh.print: q:to/HERE/;
+    my %meeus-test-data = [
+HERE
+
+for %t.keys.sort -> $k {
+    my @v = @(%t{$k});
+    $fh.say: "         $k => [{@v[0]}, {@v[1]}, {@v[2]}, '{@v[3].tc}'],"; 
+}
+
+$fh.say: q:to/HERE/;
+    ];
+
+    # define some key epochs
+    constant JD 
+
+HERE
+$fh.close;
+say "See outout file '$ofil'";
+
+##### subs #####
+
+sub modf($x) {
+    # splits $x into integer and fractional parts
+    # note the sign of $x is applied to BOTH parts
+    my $int-part  = $x.Int;
+    my $frac-part = $x - $int-part;
+    $frac-part, $int-part;
+}
+
+sub jd0($year, :$gregorian = True, :$debug) {
+    # from p. 62 in 1998 edition
+    my \Y = $year - 1;
+    my \A = floor(Y/100);
+    my $jd0 = floor(365.25 * Y) - A + floor(A/4) + 1_721_424.5;
+    $jd0
+}
+
+sub cal2jd($jd, :$gregorian = True, :$debug) {
+    # from p. 60 in 1998 edition
+}
+
+sub jd2cal($jd, :$gregorian = True) {
+    # from p. 63 in 1998 edition
+    # valid only for positive JD
+
+    my ($frac-part, $int-part) = modf($jd + 0.5);
+    my \F = $frac-part;
+    my \Z = $int-part;
+
+    note "DEBUG: input to modf: {$jd + 0.5} => F ({F}), Z ({Z})" if $debug;
+
+    my $A;
+    if Z >= 2_291_161 {
+        my $alpha = floor( (Z - 1_867_216.25) / 36_524.25 );
+        $A = Z + 1 + $alpha - floor( $alpha / 4 );
+    }
+    else {
+        $A = Z;
+    }
+    my \A = $A;
+
+    my \B = A + 1524;
+    my \C  = floor( (B - 122.1) / 365.25 );
+    my \D = floor( 365.25 * C );
+    my \E  = floor( (B -D) / 30.6001 );
+
+    my $da = B - D - floor(30.6001 * E) + F;
+    my $mo = E - ( E < 14 ?? 1 !! 13 );
+    my $ye = C - ( $mo > 2 ?? 4716 !! 4715 );
+    
+    # Note $da is a Real number
+    $ye, $mo, $da;
+}
