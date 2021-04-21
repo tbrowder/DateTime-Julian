@@ -14,6 +14,8 @@ if not @*ARGS {
 
     Tests subs jd2cal and cal2jd against Meeus's test data in
     file '$ifil'.
+
+    NOTE: The 'INT' function described in Meeus is the Raku 'floor' routine.
     HERE
    
     exit;
@@ -36,12 +38,18 @@ for $ifil.IO.lines -> $line is copy {
     my $m = mon2num $M;
     my $d = @w.shift;
     my $j = @w.shift;    
-    note "    DEBUG: y/m/d ($M) => jd : $y $m $d => $j" if $debug;
+    my $gregorian = True;
+    if @w.elems {
+        my $s = @w.shift;
+        $gregorian = False if $s ~~ /^:i j/;
+    }
 
-    my ($ye, $mo, $da) = jd2cal $j;
+    note "    DEBUG: y/m/d ($M) (Gregorian == $gregorian) => jd : $y $m $d => $j" if $debug;
+
+    my ($ye, $mo, $da) = jd2cal $j, :$gregorian, :$debug;
     say "JD $j ($y/$m/$d) => $ye/$mo/$da";
     # load the hash with the test data
-    %t{$j} = [$y, $m, $d, $M];
+    %t{$j} = [$y, $m, $d, $M, $gregorian];
 }
 say "Normal end. Found $nd data points (expected 16).";
 
@@ -99,7 +107,7 @@ sub cal2jd($jd, :$gregorian = True, :$debug) {
     # from p. 60 in 1998 edition
 }
 
-sub jd2cal($jd, :$gregorian = True) {
+sub jd2cal($jd, :$gregorian = True, :$debug) {
     # from p. 63 in 1998 edition
     # valid only for positive JD
 
