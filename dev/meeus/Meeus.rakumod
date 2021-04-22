@@ -43,20 +43,22 @@ sub cal2jd($y is copy, $m is copy, $d, :$gregorian = True, :$debug --> Real) is 
 
     my \JD = floor(365.25 * (Y + 4_716)) + floor(30.6001 * (M + 1)) + D + B - 1_524.5;
     JD
-}
+} # sub cal2jd
 
-sub jd2cal($jd, :$gregorian = True, :$debug --> List) is export {
+sub jd2cal($jd is copy, :$gregorian = True, :$debug --> List) is export {
     # from p. 63 in 1998 edition
     # valid only for positive JD
 
-    my ($frac-part, $int-part) = modf($jd + 0.5);
+    $jd += 0.5;
+    my ($frac-part, $int-part) = modf $jd;
     my \F = $frac-part;
     my \Z = $int-part;
 
     note "DEBUG: input to modf: {$jd + 0.5} => F ({F}), Z ({Z})" if $debug;
 
     my $A;
-    if Z >= 2_291_161 {
+    #if Z >= 2_291_161 { # errata, 2ed, Feb 16, 2004
+    if Z >= 2_299_161 {
         my $alpha = floor( (Z - 1_867_216.25) / 36_524.25 );
         $A = Z + 1 + $alpha - floor( $alpha / 4 );
     }
@@ -76,4 +78,4 @@ sub jd2cal($jd, :$gregorian = True, :$debug --> List) is export {
     
     # Note $da is a Real number
     $ye, $mo, $da;
-}
+} # sub jd2cal

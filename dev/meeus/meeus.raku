@@ -71,19 +71,46 @@ say "cmp DateTime daycounts, does test JD (2451545) == $ddays ?";
 my $fh = open $ofil, :w;
 my $ndp = @t.elems;
 $fh.print: qq:to/HERE/;
-    my \%meeus-test-data = [
-        # $ndp data points
-        # Julian-date   Y   M  D      m    Gregorian?
+use Test;
+use lib <../lib ./.>;
+use Meeus;
+
+plan 92;
+
+my \@meeus-test-data = [
+    # $ndp data points
+    # Julian-date   Y   M  D      m    Gregorian?
 HERE
 
 for @t -> $arr {
     my @v = @($arr);
-    $fh.say: "        [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}, '{@v[4].tc}', {@v[5]}],"; 
+    $fh.say: "    [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}, '{@v[4].tc}', {@v[5]}],"; 
 }
 
 $fh.say: q:to/HERE/;
-    ];
+];
+
+# use the data and check for round-tripping
+my $tnum = 0;
+for @meeus-test-data -> $arr {
+    ++$tnum;
+    my $jd  = $arr[0];
+    my $ye  = $arr[1];
+    my $mo  = $arr[2];
+    my $da  = $arr[3];
+    my $mon = $arr[4];
+    my $gregorian = $arr[5];
+
+    my $JD = cal2jd $ye, $mo, $da, :$gregorian;
+    my ($Y, $M, $D) = jd2cal $jd, :$gregorian;
+
+    is $JD, $jd, "== data point $tnum: cmp JD, Gregorian: $gregorian"; 
+    is $Y, $ye, "cmp Y, Gregorian: $gregorian";
+    is $M, $mo, "cmp M, Gregorian: $gregorian";
+    is $D, $da, "cmp D, Gregorian: $gregorian";
+}
 HERE
+
 
 =begin comment
     # define some key epochs
