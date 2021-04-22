@@ -1,0 +1,70 @@
+The Gregorian calendar started on October 15, 1582.
+The Julian date is measured from zero at noon on
+January 1, 4713 B.C. (proleptic Julian calendar)
+or November 24, 4714 B.C. for the proleptic
+Gregorian calendar.
+The Julian date of any instant is the Julian day 
+number plus the fraction of a day since the
+previous noon UTC.
+There was no year zero for civil caledars so, by convention,
+years B.C. are expressed mathematically as Y-1. For example,
+2000 B.C. is year -1999.
+
+According to Synopsis 32, date calculations are done on
+the proleptic Gregorian calendar.
+The 'daycount' attribute is a count of the days since
+(or before) the Modified Julian Date (MJD) epoch of 
+1858-11-07T00:00:00Z.
+The '.Instant.tai' attribute is a count of the seconds
+since the POSIX epoch of 1970-01-01T00:00:00;
+
+Note the Meeus seems to implicitly use the Julian
+calendar for the cal2jd and jd2cal routines
+in his examples in the 1998 edition.
+
+Also note the error in the Sputnik example on
+p. 61 (see the test data file in this directory
+for details).
+
+Given the examples and the implicit use of the
+Julian calendar for dates before the Gregorian
+calendar was implemented leads to the following 
+questions:
+
+1. What is the best way to compare dates before
+   and after the Julian/Gregorian divide?
+
+2. Does Raku handle the conversion implicitly, or
+   is it a proleptic Gregorian calendar?
+
+3. How are the "lost" years handled?
+
+For the current Raku master branch, test the capability
+to instantiate a DateTime object which matches the
+Meeus data in the following manner:
+
+Given the Julian Date (JD) of an instant,
+determine its Gregorian UTC
+-----------------------------------------
+
+The recipe is to convert the input JD value to seconds from
+the POSIX epoch. Then use that new value to instantiate the DateTime
+object. Given JD $jd:
+
+  my $pos0 = 2_440_587.5;    # the POSIX epoch in terms of JD
+  my $days = $jd - $pos0;    # days from the POSIX epoch to the desired JD
+  my $psec = $days * 86_400; # days x seconds-per-day
+  my $date = DateTime.new($psec); # the desired UTC
+
+Given a Gregorian instant (UTC), 
+determine its Julian Date (JD)
+--------------------------------
+
+The recipe is to convert the input MJD value to its JD value.
+Given UTC 2021-06-09T09:45:10.45Z:
+
+  my $d   = DateTime.new: '2021-06-09T09:45:10.45Z';
+  my $mjd = $d.daycount;
+  $mjd   += $d.day-fraction; # or convert hours, minutes, seconds to fraction of a 24-hour day
+  my $jd  = $mjd + 2_400_00.5; # from the relationship: MJD = JD - 240000.5
+
