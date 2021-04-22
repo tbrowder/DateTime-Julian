@@ -5,6 +5,14 @@ use Text::Utils :strip-comment;
 #use lib <../lib>;
 use Gen-Test :mon2num;
 
+sub day-frac(DateTime:D $dt, :$debug --> Real) is export {
+    constant sec-per-day = 24 * 60 * 60;
+    my $frac = $dt.hour * 60 * 60;
+    $frac += $dt.minute * 60;
+    $frac += $dt.second;
+    $frac /= sec-per-day;
+}
+
 sub modf($x) is export {
     # splits $x into integer and fractional parts
     # note the sign of $x is applied to BOTH parts
