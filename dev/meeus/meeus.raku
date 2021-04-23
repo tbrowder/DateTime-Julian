@@ -75,7 +75,7 @@ use Test;
 use lib <../lib ./.>;
 use Meeus;
 
-plan 92;
+plan 183;
 
 my \@meeus-test-data = [
     # $ndp data points
@@ -97,26 +97,89 @@ for @meeus-test-data -> $arr {
     my $jd  = $arr[0];
     my $ye  = $arr[1];
     my $mo  = $arr[2];
-    my $da  = $arr[3];
+    my $da  = $arr[3]; # a real number
     my $mon = $arr[4];
     my $gregorian = $arr[5];
 
+    my ($day-frac, $day) = modf $da;
+    my ($ho, $mi, $se) = day-frac2hms $day-frac;
+ 
+    # The official start date for the Gregorian calendar
+    # was October 15, 1582.
+    constant GC = DateTime.new: :1582year, :10month, :15day;
+
+    # check the Meeus implementations
     my $JD = cal2jd $ye, $mo, $da, :$gregorian;
     my ($Y, $M, $D) = jd2cal $jd, :$gregorian;
+    # we may need proleptic Gregorian values from Meeus' data
+    my ($JDg, $Yg, $Mg, $Dg);
+    if not $gregorian {
+        $JDg = cal2jd $ye, $mo, $da, :gregorian(True);
+        ($Yg, $Mg, $Dg) = jd2cal $jd, :gregorian(True);
+    }
 
     is $JD, $jd, "== data point $tnum: cmp JD, Gregorian: $gregorian"; 
     is $Y, $ye, "cmp Y, Gregorian: $gregorian";
     is $M, $mo, "cmp M, Gregorian: $gregorian";
     is $D, $da, "cmp D, Gregorian: $gregorian";
+
+    # check the Raku implementations
+    next if not $gregorian;
+
+    # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
+    constant POS0 = 2_440_587.5;    # the POSIX epoch in terms of JD
+    # use the test value $jd
+    my $days = $jd - POS0;          # days from the POSIX epoch to the desired JD
+    my $psec = $days * 86_400;      # days x seconds-per-day
+
+    my $date = DateTime.new($psec); # the desired UTC
+    is $date.hour, $ho, "cmp JD to DateTime";
+    is $date.minute, $mi, "cmp JD to DateTime";
+    is $date.second, $se, "cmp JD to DateTime";
+    if $gregorian {
+        is $date.year, $Y, "cmp JD to DateTime";
+        is $date.month, $M, "cmp JD to DateTime";
+        is $date.day, $D.Int, "cmp JD to DateTime";
+    }
+
+   # next; # suspect daycount is bad
+
+=begin comment
+    else {
+        is $date.year, $Yg, "special handling for pre-Gregorian date";
+        is $date.month, $Mg, "special handling for pre-Gregorian date";
+        is $date.day, $Dg.Int, "special handling for pre-Gregorian date";
+    }
+=end comment
+
+    # Given a Gregorian instant (UTC), determine its Julian Date (JD)
+    if $gregorian {
+        my $d   = DateTime.new: :year($Y), :month($M), :day($D.Int), :hour($ho), :minute($mi), :second($se);
+
+        my $psec = $d.Instant.tai;
+        my $pdays = $psec/86_400;
+        my $jd = $pdays + POS0;
+
+        =begin comment
+        # daycount is bad
+        my $mjd = $d.daycount;
+        $mjd   += day-frac $d;
+        my $jd  = $mjd + 2_400_00.5; # from the relationship: MJD = JD - 240000.5
+        =end comment
+
+        is-approx $jd, $JD, "cmp JD from DateTime";
+    }
+=begin comment
+    else {
+        my $d   = DateTime.new: :year($Yg), :month($Mg), :day($Dg.Int), :hour($ho), :minute($mi), :second($se);
+        my $mjd = $d.daycount;
+        $mjd   += day-frac $d;
+        my $jd  = $mjd + 2_400_00.5; # from the relationship: MJD = JD - 240000.5
+        is $jd, $JD, "special handling for pre-Gregorian date";
+    }
+=end comment
 }
 HERE
 
-
-=begin comment
-    # define some key epochs
-    constant JD 
-
-HERE
-=end comment
 $fh.close;
 say "See outout file '$ofil'";

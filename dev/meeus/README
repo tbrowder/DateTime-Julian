@@ -6,19 +6,24 @@ Gregorian calendar.
 The Julian date of any instant is the Julian day 
 number plus the fraction of a day since the
 previous noon UTC.
-There was no year zero for civil caledars so, by convention,
+There was no year zero for civil calendars so, by convention,
 years B.C. are expressed mathematically as Y-1. For example,
 2000 B.C. is year -1999.
 
 According to Synopsis 32, date calculations are done on
 the proleptic Gregorian calendar.
+The official start date for the Gregorian calendar
+was October 15, 1582.
+Historical dates in the western world prior to that
+date were in the Julian calendar.
+
 The 'daycount' attribute is a count of the days since
 (or before) the Modified Julian Date (MJD) epoch of 
 1858-11-07T00:00:00Z.
 The '.Instant.tai' attribute is a count of the seconds
 since the POSIX epoch of 1970-01-01T00:00:00;
 
-Note the Meeus seems to implicitly use the Julian
+Note that Meeus seems to implicitly use the Julian
 calendar for the cal2jd and jd2cal routines
 in his examples in the 1998 edition.
 

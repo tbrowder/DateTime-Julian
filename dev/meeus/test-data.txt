@@ -1,6 +1,7 @@
-# data from Meeus' "Astronomical Algorithms"
+# data from Jean Meeus' "Astronomical Algorithms"
 #
-# ?? data points
+# All data have been checked against NASA's Time
+# Conversion Tool.
 #
 # Calendar date   Julian date Calendar type
 # (y/m/d)          (jd)       (G or J, default: Gregorian)
@@ -41,7 +42,7 @@
  1957 oct  4.81 2_436_116.31 # launch of Sputnik 1
 
 # unnumbered exercises, p. 64
-#   input was JD
+#   input was JD 
   333 jan 27.5  1_842_713.0  Julian # (no. 20) 
  -584 may 28.63 1_507_900.13 Julian # (no. 21)
 
