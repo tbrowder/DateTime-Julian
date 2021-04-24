@@ -124,33 +124,27 @@ for @meeus-test-data -> $arr {
     is $D, $da, "cmp D, Gregorian: $gregorian";
 
     # check the Raku implementations
-    next if not $gregorian;
 
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
     constant POS0 = 2_440_587.5;    # the POSIX epoch in terms of JD
     # use the test value $jd
     my $days = $jd - POS0;          # days from the POSIX epoch to the desired JD
     my $psec = $days * 86_400;      # days x seconds-per-day
-
     my $date = DateTime.new($psec); # the desired UTC
-    is $date.hour, $ho, "cmp JD to DateTime";
-    is $date.minute, $mi, "cmp JD to DateTime";
-    is $date.second, $se, "cmp JD to DateTime";
+
+    is $date.hour, $ho, "cmp JD to DateTime hour";
+    is $date.minute, $mi, "cmp JD to DateTime minute";
+    is $date.second, $se, "cmp JD to DateTime second";
     if $gregorian {
-        is $date.year, $Y, "cmp JD to DateTime";
-        is $date.month, $M, "cmp JD to DateTime";
-        is $date.day, $D.Int, "cmp JD to DateTime";
+        is $date.year, $Y, "cmp JD to DateTime year";
+        is $date.month, $M, "cmp JD to DateTime month";
+        is $date.day, $D.Int, "cmp JD to DateTime day";
     }
-
-   # next; # suspect daycount is bad
-
-=begin comment
     else {
-        is $date.year, $Yg, "special handling for pre-Gregorian date";
-        is $date.month, $Mg, "special handling for pre-Gregorian date";
-        is $date.day, $Dg.Int, "special handling for pre-Gregorian date";
+        is $date.year, $Yg, "cmp JD to DateTime year, special handling for pre-Gregorian date";
+        is $date.month, $Mg, "cmp JD to DateTime month, special handling for pre-Gregorian date";
+        is $date.day, $Dg.Int, "cmp JD to DateTime day, special handling for pre-Gregorian date";
     }
-=end comment
 
     # Given a Gregorian instant (UTC), determine its Julian Date (JD)
     if $gregorian {
@@ -169,15 +163,23 @@ for @meeus-test-data -> $arr {
 
         is-approx $jd, $JD, "cmp JD from DateTime";
     }
-=begin comment
+#=begin comment
     else {
         my $d   = DateTime.new: :year($Yg), :month($Mg), :day($Dg.Int), :hour($ho), :minute($mi), :second($se);
+
+        my $psec = $d.Instant.tai;
+        my $pdays = $psec/86_400;
+        my $jd = $pdays + POS0;
+
+        =begin comment
         my $mjd = $d.daycount;
         $mjd   += day-frac $d;
         my $jd  = $mjd + 2_400_00.5; # from the relationship: MJD = JD - 240000.5
-        is $jd, $JD, "special handling for pre-Gregorian date";
+        =end comment
+
+        is-approx $jd, $JD, "cmp JD, special handling for pre-Gregorian date";
     }
-=end comment
+#=end comment
 }
 HERE
 

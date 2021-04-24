@@ -28,8 +28,27 @@ sub day-frac(DateTime:D $dt, :$debug --> Real) is export {
     $frac /= sec-per-day;
 }
 
-sub cal2jd(\Y, \M, \D, :$gregorian = True, :$debug --> Real) is export {
+sub cal2jd(\Y, \M, $D, :$input where /:i g|j/, :$output where /:i g|j/, :$debug --> Real) is export {
+    # Using Richards' algorithms
+    my \D = $D.Int;
+    my $day-frac = $D - D;
+
+    # convert to the intermediate calendar form using equations ?
+
+    # convert to the Gregorian calendar
+
+    # convert to the Julian calendar
+    my $jd = 0;
+    # add the day fraction back
+    $jd += $day-frac;
 } # sub cal2jd
 
-sub jd2cal(\JD, :$gregorian = True, :$debug --> List) is export {
+sub jd2cal($JD, :$gregorian = True, :$debug --> List) is export {
+    # Using Richards' algorithms
+    my \JD = $JD.Int;
+    my $day-frac = $JD - JD;
+
+    my $da = 0;
+    # add the day fraction back
+    $da += $day-frac;
 } # sub jd2cal

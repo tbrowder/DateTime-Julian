@@ -16,6 +16,12 @@ The official start date for the Gregorian calendar
 was October 15, 1582.
 Historical dates in the western world prior to that
 date were in the Julian calendar.
+Note there are no dates in the Julian calendar from
+?
+to 
+?
+inclusive.
+
 
 The 'daycount' attribute is a count of the days since
 (or before) the Modified Julian Date (MJD) epoch of 

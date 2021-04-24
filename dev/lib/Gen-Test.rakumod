@@ -16,7 +16,7 @@ accordingly (i.e. the year 4713 BC becomes astronomical year number
 
 class T {...}
 
-sub get-meeus-data($ifil, :$debug --> List) is export {
+sub get-meeus-test-data($ifil, :$debug --> List) is export(:meeus) {
     # returns an array of class T objects
 
     my @T;
@@ -36,21 +36,152 @@ sub get-meeus-data($ifil, :$debug --> List) is export {
         #my ($ye, $mo, $da) = jd2cal $j;
         #say "JD $j ($y/$m/$d) => $ye/$mo/$da";
         # load the hash with the test data
-        #%t{$j} = [$y, $m, $d, $M];
+        #   %t{$j} = [$y, $m, $d, $M];
+
+        # COMMON attrs
+        $t.year = $y;
+        $t.jd   = $j; # Julian date (years + fraction of a 24-hour day)
+
+        # Meeus only
+        $t.m    = $m; # 1..12
+        $t.d    = $d; # 1..31 + fraction of day (of 24 hrs = 86400 sec)
+        $t.M    = $M; # Jan..Dec
+        @T.push: $t;
     }
     my $nd = @T.elems;
     die "FATAL: Expected 16 data points but got $nd." if $nd != 16;
 
     return @T;
 
-} # sub get-meeus-data
+} # sub get-meeus-test-data
 
-sub get-jpl-data($ifil, :$debug --> List) is export {
+=begin comment
+# one block of data from a JPL date/time <=> julian date tranformation:
+<pre>
+
+<b>Input Time Zone: UT</b>
+-------------------------------------------------------
+B.C. 4000-Jan-01 11:59:59.99 = B.C. 4000-Jan-01.4999999
+B.C.  4000-01-01 11:59:59.99 = B.C.  4000-01-01.4999999
+B.C.   4000--001 11:59:59.99 = B.C.   4000--001.4999999
+
+Day-of-Week: Thursday
+
+<b>Julian Date</b>
+------------------
+ 260423.9999999 UT
+</pre>
+=end comment
+
+sub get-jpl-test-data($ifil, :$debug --> List) is export {
     # returns an array of class T objects
-} # sub get-jpl-data
+
+    # from JPL
+    my $in-block = 0;
+    my $t; # class T object
+    my @T;
+    for $ifil.IO.lines {
+        # parse data as triplets:
+        #   ad|bc    date...
+    # B.C.  4000-01-01 11:59:59.99 = B.C.  4000-01-01.4999999
+        #   day of week
+    # Day-of-Week: Thursday
+        #   julian day
+    # 260423.9999999 UT
+        when /'<pre>'/ {
+            $in-block = 1;
+            $t = T.new;
+        }
+        when /'</pre>'/ {
+            $in-block = 0;
+            # wrap it up
+            if $t {
+                # assemble the dt value
+                my $e = $t.era < 0 ?? '-' !! '+';
+                $t.dts = "{$e}{$t.date}T{$t.time}Z";
+                @T.push: $t if $t;
+            }
+        }
+
+    # B.C.   4000--001 11:59:59.99 = B.C.   4000--001.4999999
+        when /^ \h* ['B.C.'|'A.D.']
+                \h\h\h # <== the THREE spaces are critical for detecting the desired date format
+                    [\S+] \h+ [\S+] \h+ '='
+                \h+ ['B.C.'|'A.D.'] \h+
+                    (\S+) \h*
+             / {
+            my $date = ~$0;
+            if $date ~~ /^ \d\d\d\d '--'  (\d\d\d) ('.' \d+) $/ {
+                say "DEBUG: date = '$date'" if $debug;
+                my $doy = ~$0;
+                $t.day-frac = +$1;
+                $doy ~~ s:g/^0*//;
+                $t.doy = $doy;
+                say "  doy = '$doy'" if $debug;
+                say "  day-frac = '{$t.day-frac}'" if $debug;
+            }
+            else {
+                die "Unexpected date value '$date'";
+            }
+        }
+
+    # B.C.  4000-01-01 11:59:59.99 = B.C.  4000-01-01.4999999
+        when /^ \h* ('B.C.'|'A.D.')
+                \h\h # <== the TWO spaces are critical for detecting the desired date format
+                    (\S+) \h+ (\S+) \h+ '='
+             / {
+            my $era   = ~$0;
+            my $date  = ~$1;
+            my $time  = ~$2;
+            # a hack
+            if $date ~~ /^ (\d\d\d\d) '-' \d\d '-' \d\d $/ {
+                $t.year  = +$0;
+            }
+            else {
+                die "Unexpected date value '$date'";
+            }
+
+            if $era eq 'B.C.' {
+                $t.era   = -1;
+                $t.year *= -1;
+            }
+            elsif $era eq 'A.D.' {
+                $t.era = 1;
+            }
+            else {
+                die "Unexpected era value '$era'";
+            }
+            $t.date = $date;
+            $t.time = $time;
+        }
+        when /^ \h* 'Day-of-Week:' \h+ (\S+) / {
+            # Day-of-Week: Thursday
+            my $dow = ~$0;
+            $t.dow  = $dow;
+            $t.day-of-week = get-dow-number $dow;
+        }
+        when /^ \h* (\d+ '.' \d+) \h+ UT/ {
+            # 260423.9999999 UT
+            my $jd = +$0;
+            $t.jd  = $jd;
+        }
+    }
+
+    if $debug {
+        for @T -> $t {
+            say "=== Era: {$t.era}"; # {$t.date}{$t.time}{$t.dow}{$t.jd}"
+            say "  {$t.date}"; #{$t.time}{$t.dow}{$t.jd}"
+            say "  {$t.time}"; #{$t.dow}{$t.jd}"
+            say "  {$t.dow}"; #{$t.jd}"
+            say "  {$t.jd}";
+            say "  {$t.dts}";
+        }
+    }
+    return @T;
+} # sub get-jpl-test-data
 
 # a class for holding time test data from several sources and formats
-class T is export {
+class T is export(:meeus) {
     # JPL only
     has $.era  is rw; # subtract 1 from dates B.C. from JPL
     has $.date is rw;
