@@ -29,3 +29,15 @@ and return value are integers.
 We use the 'min' function to select the minimum of a pair
 of numbers. Raku has that routine.
 
+Notation and symbols
+--------------------
+
+Richards' formulae refer to D/M/Y as the given
+calendar, D'/M'/Y' as the computational calendar,
+and J as the common and unabiguasly defined Julian day number (J)
+for both.
+
+For this implementation we shall use Dp/Mp/Yp as the symbols for
+the computational calendar (and suffix other vars with 'p' as well).
+
+

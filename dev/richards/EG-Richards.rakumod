@@ -5,6 +5,61 @@ use Text::Utils :strip-comment;
 #use lib <../lib>;
 use Gen-Test :mon2num;
 
+# from Table 25.4 Parameters for calculating the Gregorian correction, p. 320
+constant %GC = [
+    10 => {
+        cal => 'Gregorian',
+        J0 => 4716,
+        Y0 => 4716,
+        g0 => 4716,
+        A => 4716,
+        B => 4716,
+        G => 4716,
+    },
+];
+
+# from Table 25.1 Parameters for the conversion of dates in regular calendars, p. 311
+constant %RC is export = [
+    10 => {
+        cal => 'Julian Roman',
+        y => 4716,
+        j => 1401,
+        m => 3,
+        n => 12,
+        r => 4,
+        p => 1461,
+        q => 0,
+        v => 3,
+        u => 5,
+        s => 153,
+        t => 2,
+        w => 2,
+    },
+    11 => {
+        cal => 'Gregorian',
+        y => 4716,
+        j => 1401, # WARNING: one must add 'g' to this value, see p. 319, Equation 25.26
+        m => 3,
+        n => 12,
+        r => 4,
+        p => 1461,
+        q => 0,
+        v => 3,
+        u => 5,
+        s => 153,
+        t => 2,
+        w => 2,
+    },
+];
+
+sub g-for-input-Yp(\Yp) is export {
+    # See Equation 25.26 on p. 319
+}
+
+sub g-for-input-J(\J) is export {
+    # See Equation 25.34 on p. 320
+}
+
 sub day-frac2hms(Real $x, :$debug --> List) is export {
     # Converts the fraction of a day into hours, minutes,
     # and seconds"
@@ -29,7 +84,8 @@ sub day-frac(DateTime:D $dt, :$debug --> Real) is export {
 }
 
 sub cal2jd(\Y, \M, $D, :$input where /:i g|j/, :$output where /:i g|j/, :$debug --> Real) is export {
-    # Using Richards' algorithms
+    # Using Richards' Algorithm E, p. 323
+
     my \D = $D.Int;
     my $day-frac = $D - D;
 
@@ -44,7 +100,7 @@ sub cal2jd(\Y, \M, $D, :$input where /:i g|j/, :$output where /:i g|j/, :$debug 
 } # sub cal2jd
 
 sub jd2cal($JD, :$gregorian = True, :$debug --> List) is export {
-    # Using Richards' algorithms
+    # Using Richards' Algorithm F, p. 324
     my \JD = $JD.Int;
     my $day-frac = $JD - JD;
 
