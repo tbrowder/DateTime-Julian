@@ -2,8 +2,10 @@ unit module EG-Richards;
 
 use Text::Utils :strip-comment;
 
-#use lib <../lib>;
 use Gen-Test :mon2num;
+
+# This module contains algorithms from E. G. Richards plus some
+# found on Wikipedia due to ??
 
 # from Table 25.4 Parameters for calculating the Gregorian correction, p. 320
 constant %GC = [
@@ -108,3 +110,14 @@ sub jd2cal($JD, :$gregorian = True, :$debug --> List) is export {
     # add the day fraction back
     $da += $day-frac;
 } # sub jd2cal
+
+sub gregorian2jd($y, $m, $d, :$debug --> Real) {
+}
+sub julian2jd() {
+}
+sub jd2gregorian($jd) {
+}
+sub jd2julian($jd) {
+}
+
+

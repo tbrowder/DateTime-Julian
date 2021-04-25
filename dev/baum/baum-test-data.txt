@@ -1,0 +1,40 @@
+# data from Peter Baum
+#
+# All post-Julian calendar data have been checked against NASA's Time
+# Conversion Tool.
+#
+# All pre-Gregorian calendar data have been checked against NASA's Time
+# Conversion Tool.
+#
+# Calendar date   Julian date Calendar type
+# (y/m/d)          (jd)       (G or J, default: Gregorian)
+
+# Table 2       JD from Gregorian calendar date
+-4713  11 24.0
+-4713  11 24.5
+-4713  11 25.0
+-4712   1  1.0
+-4712   1  1.5
+-4712   1  2.0
+    0   1  1.0
+    0   2  1.0
+    0   3  1.0
+    0  12  1.0
+    1   1  1.0
+ 1582  10  1.0
+ 1582  10  1.0
+ 1840  12  1.0
+ 1858  11  1.0
+ 1900   1  1.0
+ 1901   1  1.0
+ 1970   1  1.0
+ 1980   1  1.0
+
+# Table 2       JD from Julian calendar date
+
+
+
+
+
+
+
