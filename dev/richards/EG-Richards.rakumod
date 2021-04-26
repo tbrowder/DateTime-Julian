@@ -4,8 +4,7 @@ use Text::Utils :strip-comment;
 
 use Gen-Test :mon2num;
 
-# This module contains algorithms from E. G. Richards plus some
-# found on Wikipedia due to ??
+# This module contains algorithms from E. G. Richards.
 
 # from Table 25.4 Parameters for calculating the Gregorian correction, p. 320
 constant %GC = [

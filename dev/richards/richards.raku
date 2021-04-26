@@ -6,15 +6,17 @@ use lib <../lib ./.>;
 use Gen-Test :mon2num;
 use EG-Richards;
 
-my $ifil  = '../meeus/test-data.txt';
-my $ofil  = 'meeus-data.t';
+my $ifil   = '../meeus/test-data.txt';
+my $ifil2  = '../baum/test-data.txt';
+my $ofil  = 'meeus-baum-data.t';
 my $debug = 0;
 if not @*ARGS {
     say qq:to/HERE/;
     Ugage: {$*PROGRAM.basename} go [debug]
 
     Tests Richards' subs jd2cal and cal2jd against Meeus's test data in
-    file '$ifil'.
+    file '$ifil' and Baum's in
+    file '$ifil2'.
     HERE
 
     exit;
