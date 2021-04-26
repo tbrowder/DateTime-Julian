@@ -61,7 +61,7 @@ use Test;
 use lib <../lib ./.>;
 use Baum;
 
-plan 183;
+plan 152;
 
 my \@baum-test-data = [
     # $ndp data points
@@ -92,7 +92,6 @@ for @baum-test-data -> $arr {
     my $mo  = $arr[1];
     my $da  = $arr[2]; # a real number
     my $JD  = $arr[3];
-    my $gregorian = $arr[4];
 
     my ($day-frac, $day) = modf $da;
     my ($ho, $mi, $se) = day-frac2hms $day-frac;
@@ -102,34 +101,33 @@ for @baum-test-data -> $arr {
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
     # use the test value $jd
     my $days = $JD - POS0;          # days from the POSIX epoch to the desired JD
-    my $psec = $days * sec-per-day;      # days x seconds-per-day
+    my $psec = $days * sec-per-day; # days x seconds-per-day
     my $date = DateTime.new($psec); # the desired UTC
 
+    # 6 tests
     is $date.hour, $ho, "cmp JD to DateTime hour";
     is $date.minute, $mi, "cmp JD to DateTime minute";
     is $date.second, $se, "cmp JD to DateTime second";
-    if $gregorian {
-        is $date.year, $ye, "cmp JD to DateTime year";
-        is $date.month, $mo, "cmp JD to DateTime month";
-        is $date.day, $day, "cmp JD to DateTime day";
-    }
+    is $date.year, $ye, "cmp JD to DateTime year";
+    is $date.month, $mo, "cmp JD to DateTime month";
+    is $date.day, $day, "cmp JD to DateTime day";
 
     # Given a Gregorian instant (UTC), determine its Julian Date (JD)
-    if $gregorian {
-        my $d   = DateTime.new: :year($ye), :month($mo), :day($day), :hour($ho), :minute($mi), :second($se);
-
-        my $psec = $d.Instant.tai;
+    my $d = DateTime.new: :year($ye), :month($mo), :day($day), :hour($ho), :minute($mi), :second($se);
+    # 2 tests
+    {
+        my $psec  = $d.posix;
         my $pdays = $psec/sec-per-day;
-        my $jd = $pdays + POS0;
+        my $jd    = $pdays + POS0;
+        is-approx $jd, $JD, "cmp JD from DateTime.posix";
+    }
 
-        =begin comment
-        # daycount is bad
+    {
+        # daycount is god
         my $mjd = $d.daycount;
         $mjd   += day-frac $d;
         my $jd  = $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
-        =end comment
-
-        is-approx $jd, $JD, "cmp JD from DateTime";
+        is-approx $jd, $JD, "cmp JD from DateTime.daycount + day-frac";
     }
 }
 HERE
