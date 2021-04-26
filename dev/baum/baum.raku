@@ -32,19 +32,20 @@ for $ifil.IO.lines -> $line is copy {
     $line = strip-comment $line;
     next if $line !~~ /\S/;
     note "DEBUG: line: '$line'" if $debug;
-    ++$nd;
     my @w = $line.words;
-    my $j = @w.shift;    
     my $y = @w.shift;
     my $m = @w.shift;
     my $d = @w.shift;
+    my $j = @w.shift;    
     my $gregorian = True;
     if @w.elems {
         my $s = @w.shift;
         $gregorian = False if $s ~~ /^:i j/;
         note "DEBUG: gregorian = '{$gregorian}'" if $debug;
     }
-    next if not $gregorian and $greg-only;
+    next if $greg-only and not $gregorian;
+
+    ++$nd;
 
     note "    DEBUG: y/m/d (Gregorian == $gregorian) => jd : $y $m $d => $j" if $debug;
 
@@ -58,6 +59,7 @@ my $ndp = @t.elems;
 $fh.print: qq:to/HERE/;
 use Test;
 use lib <../lib ./.>;
+use Baum;
 
 plan 183;
 
