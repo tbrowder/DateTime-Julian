@@ -18,7 +18,7 @@ if not @*ARGS {
     For now only the Gregorian dates are tested.
 
     HERE
-   
+
     exit;
 }
 
@@ -34,7 +34,7 @@ for $ifil.IO.lines -> $line is copy {
     note "DEBUG: line: '$line'" if $debug;
     ++$nd;
     my @w = $line.words;
-    my $j = @w.shift;    
+    my $j = @w.shift;
     my $y = @w.shift;
     my $m = @w.shift;
     my $d = @w.shift;
@@ -44,7 +44,7 @@ for $ifil.IO.lines -> $line is copy {
         $gregorian = False if $s ~~ /^:i j/;
         note "DEBUG: gregorian = '{$gregorian}'" if $debug;
     }
-    next if not $gregorian and $greg-only;
+    next if $greg-only and not $gregorian;
 
     note "    DEBUG: y/m/d (Gregorian == $gregorian) => jd : $y $m $d => $j" if $debug;
 
@@ -58,6 +58,7 @@ my $ndp = @t.elems;
 $fh.print: qq:to/HERE/;
 use Test;
 use lib <../lib ./.>;
+use Baum;
 
 plan 183;
 
@@ -69,7 +70,7 @@ HERE
 
 for @t -> $arr {
     my @v = @($arr);
-    $fh.say: "    [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}],"; 
+    $fh.say: "    [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}],";
 }
 
 $fh.say: q:to/HERE/;
@@ -94,7 +95,7 @@ for @baum-test-data -> $arr {
 
     my ($day-frac, $day) = modf $da;
     my ($ho, $mi, $se) = day-frac2hms $day-frac;
- 
+
     # check the Raku implementations
 
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
@@ -103,7 +104,7 @@ for @baum-test-data -> $arr {
     my $psec = $days * sec-per-day;      # days x seconds-per-day
     my $date = DateTime.new($psec); # the desired UTC
 
-    is $date.hour, $ho, "cmp JD to DateTime hour";
+    is $date.hour, $ho, "=== data point $tnum: cmp JD to DateTime hour";
     is $date.minute, $mi, "cmp JD to DateTime minute";
     is $date.second, $se, "cmp JD to DateTime second";
     if $gregorian {
