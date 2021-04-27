@@ -112,11 +112,14 @@ sub jd2cal($JD, :$gregorian = True, :$debug --> List) is export {
 
 sub gregorian2jd($y, $m, $d, :$debug --> Real) {
 }
-sub julian2jd() {
+
+sub julian2jd($y, $m, $d, :$debug --> Real) {
 }
-sub jd2gregorian($jd) {
+
+sub jd2gregorian($jd, :$debug --> List) {
 }
-sub jd2julian($jd) {
+
+sub jd2julian($jd, :$debug --> List) {
 }
 
 
