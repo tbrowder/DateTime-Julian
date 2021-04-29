@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
-#
-use Text::Utils :strip-comment;
 
+use Text::Utils :strip-comment;
+use Math::FractionalPart :decimal-places;
 use lib <../lib ./.>;
 
 my $ifil  = 'baum-test-data.txt';
@@ -38,6 +38,7 @@ for $ifil.IO.lines -> $line is copy {
     my $d = @w.shift;
     my $j = @w.shift;    
     my $gregorian = True;
+    my $ndp = decimal-places $j;
     if @w.elems {
         my $s = @w.shift;
         $gregorian = False if $s ~~ /^:i j/;
@@ -50,7 +51,7 @@ for $ifil.IO.lines -> $line is copy {
     note "    DEBUG: y/m/d (Gregorian == $gregorian) => jd : $y $m $d => $j" if $debug;
 
     # load the test array with the test data
-    @t.push: [$y, $m, $d, $j, $gregorian];
+    @t.push: [$y, $m, $d, $j, $ndp]; # , $gregorian, $ndp];
 }
 say "Found $nd data points.";
 
@@ -63,15 +64,30 @@ use Baum;
 
 plan 152;
 
+# New Julian Date reference, from an online site:
+#     https://researchgate.net/publication/316558298
+# 
+# Author: Peter Baum, Aesir Research
+# 
+# Article: Date Algorithms
+#          Version: 5
+#          Last modified: October 21, 2020
+# 
+# The article Provides lots of test data as well as the best 
+# description of Julian Date versus calendars I've found.  
+# The test data in Table 2 have been checked against the NASA 
+# JPL Time Conversion Tool and the Gregorian data are tested 
+# here against Raku. 
 my \@baum-test-data = [
+    # Table 2 Gregorian data
     # $ndp data points
     # Gregorian date   Julian date
-    #    Y   M  D        JD
+    #    Y   M  D        JD        number of decimal places
 HERE
 
 for @t -> $arr {
     my @v = @($arr);
-    $fh.say: "    [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}],"; 
+    $fh.say: "    [{@v[0]}, {@v[1]}, {@v[2]}, {@v[3]}, {@v[4]}],"; 
 }
 
 $fh.say: q:to/HERE/;
@@ -92,6 +108,7 @@ for @baum-test-data -> $arr {
     my $mo  = $arr[1];
     my $da  = $arr[2]; # a real number
     my $JD  = $arr[3];
+    my $ndp = $arr[4]; # number of decimal places in $JD
 
     my ($day-frac, $day) = modf $da;
     my ($ho, $mi, $se) = day-frac2hms $day-frac;
@@ -118,16 +135,16 @@ for @baum-test-data -> $arr {
     {
         my $psec  = $d.posix;
         my $pdays = $psec/sec-per-day;
-        my $jd    = $pdays + POS0;
-        is-approx $jd, $JD, "cmp JD from DateTime.posix";
+        my $jd    = sprintf '%-0.*f', $ndp, $pdays + POS0;
+        is $jd, $JD, "cmp JD from DateTime.posix";
     }
 
     {
-        # daycount is god
+        # daycount is good
         my $mjd = $d.daycount;
         $mjd   += day-frac $d;
-        my $jd  = $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
-        is-approx $jd, $JD, "cmp JD from DateTime.daycount + day-frac";
+        my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
+        is $jd, $JD, "cmp JD from DateTime.daycount + day-frac";
     }
 }
 HERE

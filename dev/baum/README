@@ -1,4 +1,5 @@
-New reference, from an online site researchgate.net/publication/316558298
+New Julian Date reference, from an online site:
+    https://researchgate.net/publication/316558298
 
 Author: Peter Baum, Aesir Research
 
@@ -6,7 +7,10 @@ Article: Date Algorithms
          Version: 5
          Last modified: October 21, 2020
 
-Provides lots of test data as well as the best description
-of JD versus calendars I've found.
+The article Provides lots of test data as well as the best 
+description of Julian Date versus calendars I've found.  
+The test data in Table 2 have been checked against the NASA 
+JPL Time Conversion Tool and the Gregorian data are tested 
+here against Raku. 
 
 
