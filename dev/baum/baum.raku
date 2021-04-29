@@ -5,14 +5,14 @@ use Math::FractionalPart :decimal-places;
 use lib <../lib ./.>;
 
 my $ifil  = 'baum-test-data.txt';
-my $ofil  = 'baum-data.t';
+my $ofil  = 'baum-gregorian-data.t';
 my $debug = 0;
 my $greg-only = 1;
 if not @*ARGS {
     say qq:to/HERE/;
     Ugage: {$*PROGRAM.basename} go [debug]
 
-    Tests DateTime against Baum's Gregorian date test data in
+    Creates tests for DateTime against Baum's Gregorian date test data in
     file '$ifil'.
 
     For now only the Gregorian dates are tested.
@@ -76,6 +76,8 @@ plan 209;
 # The test data in Table 2 have been checked against the NASA 
 # JPL Time Conversion Tool and the Gregorian data are tested 
 # here against Raku. 
+#
+# Important note: No test data herein have fractional seconds.
 my \@baum-test-data = [
     # Table 2 Gregorian data
     # $ndp data points
@@ -114,12 +116,12 @@ for @baum-test-data -> $arr {
     # check the Raku implementations
 
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
-    # use the test value $jd
+    # use the input Baum test value $JD
     my $days = $JD - POS0;          # days from the POSIX epoch to the desired JD
     my $psec = $days * sec-per-day; # days x seconds-per-day
     my $date = DateTime.new($psec); # the desired UTC
 
-    # 6 tests
+    # 6 tests:
     is $date.hour, $ho, "cmp JD to DateTime hour";
     is $date.minute, $mi, "cmp JD to DateTime minute";
     is $date.second, $se, "cmp JD to DateTime second";
@@ -129,6 +131,7 @@ for @baum-test-data -> $arr {
 
     # Given a Gregorian instant (UTC), determine its Julian Date (JD)
     my $d = DateTime.new: :year($ye), :month($mo), :day($day), :hour($ho), :minute($mi), :second($se);
+    # 5 tests:
     {
         my $psec  = $d.posix;
         my $pdays = $psec/sec-per-day;
