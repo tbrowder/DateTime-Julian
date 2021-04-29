@@ -59,10 +59,8 @@ my $fh = open $ofil, :w;
 my $ndp = @t.elems;
 $fh.print: qq:to/HERE/;
 use Test;
-use lib <../lib ./.>;
-use Baum;
 
-plan 152;
+plan 209;
 
 # New Julian Date reference, from an online site:
 #     https://researchgate.net/publication/316558298
@@ -82,7 +80,7 @@ my \@baum-test-data = [
     # Table 2 Gregorian data
     # $ndp data points
     # Gregorian date   Julian date
-    #    Y   M  D        JD        number of decimal places
+    #    Y   M  D        JD        number of decimal places in JD
 HERE
 
 for @t -> $arr {
@@ -131,7 +129,6 @@ for @baum-test-data -> $arr {
 
     # Given a Gregorian instant (UTC), determine its Julian Date (JD)
     my $d = DateTime.new: :year($ye), :month($mo), :day($day), :hour($ho), :minute($mi), :second($se);
-    # 2 tests
     {
         my $psec  = $d.posix;
         my $pdays = $psec/sec-per-day;
@@ -140,12 +137,56 @@ for @baum-test-data -> $arr {
     }
 
     {
-        # daycount is good
         my $mjd = $d.daycount;
         $mjd   += day-frac $d;
         my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
         is $jd, $JD, "cmp JD from DateTime.daycount + day-frac";
     }
+
+    {
+        my $mjd = $d.daycount;
+        $mjd   += $d.day-fraction;
+        my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
+        is $jd, $JD, "cmp JD from DateTime.daycount + day-fraction";
+    }
+
+    {
+        my $jd  = sprintf '%-0.*f', $ndp, $d.julian-date;
+        is $jd, $JD, "cmp JD from DateTime.julian-date";
+    }
+
+    {
+        my $mjd = $d.modified-julian-date;
+        my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 240000.5
+        is $jd, $JD, "cmp JD from DateTime.modified-julian-date";
+    }
+}
+
+sub modf($x) {
+    # splits $x into integer and fractional parts
+    # note the sign of $x is applied to BOTH parts
+    my $int-part  = $x.Int;
+    my $frac-part = $x - $int-part;
+    $frac-part, $int-part;
+}
+
+sub day-frac2hms(Real $x, :$debug --> List) {
+    my $hours   = $x * 24;
+    my $hour    = $hours.Int;
+    my $minutes = ($hours - $hour) * 60;
+    my $minute  = $minutes.Int;
+    my $second  = ($minutes - $minute) * 60;
+    $hour, $minute, $second
+}
+
+sub day-frac(DateTime:D $dt, :$debug --> Real) {
+    constant sec-per-day = 24 * 60 * 60;
+    # get seconds in this day
+    my $frac = $dt.hour * 60 * 60;
+    $frac += $dt.minute * 60;
+    $frac += $dt.second;
+    # the day fraction
+    $frac /= sec-per-day;
 }
 HERE
 
