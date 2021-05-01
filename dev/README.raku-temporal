@@ -22,7 +22,6 @@ to
 ?
 inclusive.
 
-
 The 'daycount' attribute is a count of the days since
 (or before) the Modified Julian Date (MJD) epoch of 
 1858-11-07T00:00:00Z.
@@ -64,7 +63,7 @@ object. Given JD $jd:
 
   my $pos0 = 2_440_587.5;    # the POSIX epoch in terms of JD
   my $days = $jd - $pos0;    # days from the POSIX epoch to the desired JD
-  my $psec = $days * 86_400; # days x seconds-per-day
+  my $psec = $days * 86_400; # days x seconds-per-day (a Real number)
   my $date = DateTime.new($psec); # the desired UTC
 
 Given a Gregorian instant (UTC), 
