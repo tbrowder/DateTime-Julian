@@ -7,7 +7,7 @@
   ],
   "depends": [
   ],
-  "description": "blah blah blah",
+  "description": "Provides a DateTime::Julian class (a child class of Raku's DateTime)",
   "license": "Artistic-2.0",
   "name": "DateTime::Julian",
   "perl": "6.d",

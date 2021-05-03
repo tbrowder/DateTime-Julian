@@ -38,11 +38,32 @@ This module will play a major supporting role in this author's planned Raku modu
 Class DateTime::Julian methods
 ==============================
 
+method new
+----------
+
     new(:$julian-date, :$modified-julian-date) {...}
 
 If both arguments are entered, the *Julian Date* is used. If neither is entered, an exception is thrown.
 
 Note that currently none of the ordinary DateTime *new* methods can be used for instantiation, but that could be done if someone can justify it.
+
+method J2000
+------------
+
+method MJD0
+-----------
+
+method POSIX0
+-------------
+
+Class DateTime::Julian subroutines
+==================================
+
+sub jcal2gcal
+-------------
+
+sub gcal2jcal
+-------------
 
 Notes
 =====

@@ -60,6 +60,8 @@ B<Astro::Almanac>;
 
 =head1 Class DateTime::Julian methods
 
+=head2 method new
+
 =begin code
 new(:$julian-date, :$modified-julian-date) {...}
 =end code
@@ -70,6 +72,18 @@ entered, an exception is thrown.
 Note that currently none of the ordinary DateTime I<new> methods can
 be used for instantiation, but that could be done if someone
 can justify it.
+
+=head2 method J2000
+
+=head2 method MJD0
+
+=head2 method POSIX0
+
+=head1 Class DateTime::Julian subroutines
+
+=head2 sub jcal2gcal
+
+=head2 sub gcal2jcal
 
 =head1 Notes
 
