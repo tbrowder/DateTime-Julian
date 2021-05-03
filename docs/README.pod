@@ -73,17 +73,48 @@ Note that currently none of the ordinary DateTime I<new> methods can
 be used for instantiation, but that could be done if someone
 can justify it.
 
-=head2 method J2000
 
-=head2 method MJD0
+=head3 method MJD0
 
-=head2 method POSIX0
+=begin code
+say $dt.MJD0 # OUTPUT: 2_400_000.5
+=end code
 
-=head1 Class DateTime::Julian subroutines
+Returns the Julian Date value for the Modified Julian Date epoch
+of 1858-11-17T00:00:00Z.
 
-=head2 sub jcal2gcal
+=head3 method POSIX0
 
-=head2 sub gcal2jcal
+=begin code
+say $dt.POSIX0 # OUTPUT: 2_440_587.5
+=end code
+
+Returns the Julian Date value for the POSIX (Unix) epoch
+of 1970-01-01T00:00:00Z.
+
+=head2 Class DateTime::Julian subroutines
+
+=head3 sub jcal2gcal
+
+=begin code
+my ($y, $m, $d) = jcal2gcal 1232, 12, 31;
+=end code
+
+Converts a date in the Julian calendar to the
+equivalent date in the Gregorian calendar.
+
+[NOT YET IMPLEMENTED]
+
+=head3 sub gcal2jcal
+
+=begin code
+my ($y, $m, $d) = gcal2jcal 1232, 12, 31;
+=end code
+
+Converts a date in the Gregorian calendar to the
+equivalent date in the Julian calendar.
+
+[NOT YET IMPLEMENTED]
 
 =head1 Notes
 

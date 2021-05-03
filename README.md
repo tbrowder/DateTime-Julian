@@ -46,23 +46,36 @@ If both arguments are entered, the *Julian Date* is used. If neither is entered,
 
 Note that currently none of the ordinary DateTime *new* methods can be used for instantiation, but that could be done if someone can justify it.
 
-method J2000
-------------
+### method MJD0
 
-method MJD0
------------
+    say $dt.MJD0 # OUTPUT: 2_400_000.5
 
-method POSIX0
--------------
+Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T00:00:00Z.
+
+### method POSIX0
+
+    say $dt.POSIX0 # OUTPUT: 2_440_587.5
+
+Returns the Julian Date value for the POSIX (Unix) epoch of 1970-01-01T00:00:00Z.
 
 Class DateTime::Julian subroutines
-==================================
+----------------------------------
 
-sub jcal2gcal
--------------
+### sub jcal2gcal
 
-sub gcal2jcal
--------------
+    my ($y, $m, $d) = jcal2gcal 1232, 12, 31;
+
+Converts a date in the Julian calendar to the equivalent date in the Gregorian calendar.
+
+[NOT YET IMPLEMENTED]
+
+### sub gcal2jcal
+
+    my ($y, $m, $d) = gcal2jcal 1232, 12, 31;
+
+Converts a date in the Gregorian calendar to the equivalent date in the Julian calendar.
+
+[NOT YET IMPLEMENTED]
 
 Notes
 =====

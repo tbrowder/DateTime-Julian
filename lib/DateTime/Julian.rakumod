@@ -28,6 +28,15 @@ method new(:$julian-date, :$modified-julian-date) {
 
     # from @lizmat, IRC #raku, 2021-03-29  11:50
     self.DateTime::new($psec); # The desired Gregorian UTC
+
+}
+
+method POSIX0 {
+    POS0
+}
+
+method MJD0 {
+    MJD0
 }
 
 =finish
