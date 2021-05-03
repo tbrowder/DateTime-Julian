@@ -1,16 +1,19 @@
 =begin pod
 
-=head1 NAME
+=head1 DateTime::Julian
 
-B<DateTime::Julian> - Provides routines to use astronomical Julian dates (sometimes called
-I<Julian day numbers>)
+Provides several modules to handle astronomical Julian dates (sometimes called
+I<Julian day numbers>) as well as conversions between Gregorian and Julian 
+calendar dates.
 
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
 use DateTime::Julian;
-my $jd = nnnn.nnnn; # Julian date for some event
-my $utc = DateTime::Julian.new: :juliandate($jd);
+my $jd  = nnnn.nnnn; # Julian Date for some event
+my $mjd = nnnn.nnnn; # Modified Julian Date for some event
+my $utc  = DateTime::Julian.new: :julian-date($jd);
+my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
 say $utc.j2000; # Julian date for epoch J2000
 say $utc.j1900; # Julian date for epoch J1900
 say $utc.jcent;

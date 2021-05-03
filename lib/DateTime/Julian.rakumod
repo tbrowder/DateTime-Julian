@@ -1,10 +1,38 @@
-#unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER>;
-#unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> does Dateish is DateTime;
 unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> is DateTime is export;
+
+# The official start date for the Gregorian calendar
+# was October 15, 1582.
+#constant GC = DateTime.new: :1582year, :10month, :15day;
+constant POS0 = 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
+constant MJD0 = 2_400_000.5; # JD in Gregorian calendar (1858-11-17T00:00:00Z)
+constant sec-per-day = 86_400;
+
+method new(:$julian-date, :$modified-julian-date) {
+    # Convert the input value to the suitable POSIX value
+    # to instantiate the DateTime object.
+    my $JD;
+    if $julian-date.defined {
+        $JD = $julian-date
+    }
+    elsif $modified-julian-date.defined {
+        # Use relationship: MJD = JD - MJD0 => JD = MJD + MJD0
+        $JD = $modified-julian-date + MJD0
+    }
+ 
+    # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
+    my $days = $JD - POS0;          # days from the POSIX epoch to the desired JD
+    my $psec = $days * sec-per-day; # days x seconds-per-day
+
+    # from @lizmat, IRC #raku, 2021-03-29  11:50
+    self.DateTime::new($psec); # The desired Gregorian UTC
+}
+
+=finish
 
 use DateTime::Julian::APC :ALL;
 
 has $.juliandate;
+
 =begin comment
 has Real $.modifiedjuliandate;
 # aliases
