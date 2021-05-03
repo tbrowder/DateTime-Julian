@@ -1,0 +1,1 @@
+Baum, Peter. (2017). Date Algorithms. A guide to computer programmers interested in implementing date algorithms in a variety of languages and on a wide range of hardware platforms. It includes new algorithms, mathematical proofs for all algorithms, and some execution speed results.

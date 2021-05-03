@@ -2,3 +2,4 @@ Revision history for DateTime-Julian
 
 {{$NEXT}}
     - Initial version
+    - Provides the DateTime::Julian class, a child class of Raku's DateTime

@@ -1,4 +1,8 @@
 .precomp/
 /DateTime-Julian-*
 dev/juliandate.t
+dev/code/
+dev/meeus/*.pdf
+*.log
+
 
