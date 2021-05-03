@@ -12,7 +12,12 @@
   "name": "DateTime::Julian",
   "perl": "6.d",
   "provides": {
-    "DateTime::Julian": "lib/DateTime/Julian.rakumod"
+    "DateTime::Julian": "lib/DateTime/Julian.rakumod",
+    "DateTime::Julian::APC": "lib/DateTime/Julian/APC.rakumod",
+    "DateTime::Julian::Baum": "lib/DateTime/Julian/Baum.rakumod",
+    "DateTime::Julian::Calendar": "lib/DateTime/Julian/Calendar.rakumod",
+    "DateTime::Julian::EG-Lawrence": "lib/DateTime/Julian/EG-Lawrence.rakumod",
+    "DateTime::Julian::Meeus": "lib/DateTime/Julian/Meeus.rakumod"
   },
   "resources": [
   ],

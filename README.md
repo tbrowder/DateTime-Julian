@@ -1,30 +1,25 @@
 [![Actions Status](https://github.com/tbrowder/DateTime-Julian/workflows/test/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions)
 
-NAME
-====
+DateTime::Julian
+================
 
-**DateTime::Julian** - Provides routines to use astronomical Julian dates (sometimes called *Julian day numbers*)
+Provides a DateTime::Julian class (a subclass of Raku's class **DateTime**) that is instantiated by either a Julian Date (JD) or a Modified Julian Date (MJD).
 
 SYNOPSIS
 ========
 
 ```raku
 use DateTime::Julian;
-my $jd = nnnn.nnnn; # Julian date for some event
-my $utc = DateTime::Julian.new: :juliandate($jd);
-say $utc.j2000; # Julian date for epoch J2000
-say $utc.j1900; # Julian date for epoch J1900
-say $utc.jcent;
-say $utc.mjd;   # Modified Julian date
-my $lon = -86.234; # local observer's longitude;
-# Get the local sidereal time for the UTC at the current Julian date
-my $lst = $utc.lst: :$lon;
+my $jd  = nnnn.nnnn; # Julian Date for some event
+my $mjd = nnnn.nnnn; # Modified Julian Date for some event
+my $utc  = DateTime::Julian.new: :julian-date($jd);
+my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
 ```
 
 DESCRIPTION
 ===========
 
-Module **DateTime::Julian** defines a class (inherited from a Raku *DateTime* class) that is usually instantiated from a *Julian date*, although it can also be instantiated by any of the methods described in the Raku documentation for a *DateTime* class;
+Module **DateTime::Julian** defines a class (inherited from a Raku *DateTime* class) that is instantiated from a *Julian Date* or a *Modified Julian Date*.
 
 Following are some pertinent definitions from Wikipedia topic [*Julian day*](https://en.m.wikipedia.org/wiki/Julian_day):
 
@@ -43,8 +38,11 @@ This module will play a major supporting role in this author's planned Raku modu
 Class DateTime::Julian methods
 ==============================
 
-DateTime::Julian routines
-=========================
+    new(:$julian-date, :$modified-julian-date) {...}
+
+If both arguments are entered, the *Julian Date* is used. If neither is entered, an exception is thrown.
+
+Note that currently none of the ordinary DateTime *new* methods can be used for instantiation, but that could be done if someone can justify it.
 
 Notes
 =====
@@ -59,6 +57,10 @@ References
 2. *Celestial Calculations: A Gentle Introduction to Computational Astronomy*, J. L. Lawrence, The MIT Press, 2019.
 
 3. *Astro::Montenbruck*, Sergey Krushinsky, CPAN.
+
+4. *Mapping Time: The Calendar and Its History*, E. G. Richards, Oxford University Press, 2000.
+
+5. *Date Algorithms* (Version 5), Peter Baum, Aesir Research, 2020, [https://researchgate.net/publication/316558298](https://researchgate.net/publication/316558298).
 
 AUTHOR
 ======
