@@ -1,4 +1,4 @@
-unit class DateTime::Julian:ver<0.0.1>:auth<cpan:TBROWDER> is DateTime is export;
+unit class DateTime::Julian:ver<0.0.2>:auth<cpan:TBROWDER> is DateTime is export;
 
 # The official start date for the Gregorian calendar
 # was October 15, 1582.
