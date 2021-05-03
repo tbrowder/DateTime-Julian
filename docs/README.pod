@@ -58,9 +58,9 @@ almanacs.
 This module will play a major supporting role in this author's planned Raku module 
 B<Astro::Almanac>;
 
-=head1 Class DateTime::Julian methods
+=head2 Class DateTime::Julian methods
 
-=head2 method new
+=head3 method new
 
 =begin code
 new(:$julian-date, :$modified-julian-date) {...}

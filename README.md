@@ -36,10 +36,9 @@ The main purpose of this module is to simplify time and handling for this author
 This module will play a major supporting role in this author's planned Raku module **Astro::Almanac**;
 
 Class DateTime::Julian methods
-==============================
+------------------------------
 
-method new
-----------
+### method new
 
     new(:$julian-date, :$modified-julian-date) {...}
 
