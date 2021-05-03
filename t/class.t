@@ -2,7 +2,7 @@ use Test;
 
 use DateTime::Julian;
 
-plan 152;
+plan 323;
 
 # New Julian Date reference, from an online site:
 #     https://researchgate.net/publication/316558298
@@ -66,9 +66,19 @@ for @baum-test-data -> $arr {
     my ($day-frac, $day) = modf $da;
     my ($ho, $mi, $se) = day-frac2hms $day-frac;
 
+    # Create an MJD for testing
+    my $MJD  = $JD - MJD0;
+
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
     # use the input Baum test value $JD
-    my $date = DateTime::Julian.new(:julian-date($JD)); # the desired UTC
+    my $date  = DateTime::Julian.new(:julian-date($JD)); # the desired UTC
+    # Also for the MJD
+    my $date2 = DateTime::Julian.new(:modified-julian-date($MJD)); # the desired UTC
+
+    # 1 test:
+    dies-ok {
+        my $d = DateTime::Julian.new(); # empty sig
+    }, "dies with no input to DateTime::Julian.new";
 
     # 6 tests:
     is $date.hour, $ho, "cmp JD to DateTime hour";
@@ -78,16 +88,33 @@ for @baum-test-data -> $arr {
     is $date.month, $mo, "cmp JD to DateTime month";
     is $date.day, $day, "cmp JD to DateTime day";
 
+    # 6 tests:
+    is $date2.hour, $ho, "cmp JD to DateTime hour";
+    is $date2.minute, $mi, "cmp JD to DateTime minute";
+    is $date2.second, $se, "cmp JD to DateTime second";
+    is $date2.year, $ye, "cmp JD to DateTime year";
+    is $date2.month, $mo, "cmp JD to DateTime month";
+    is $date2.day, $day, "cmp JD to DateTime day";
+
     # Given the new Gregorian instant (UTC), check its Julian Date (JD)
     # and other attributes.
-    # 2 tests:
+    # 4 tests:
     {
-        my $jd    = sprintf '%-0.*f', $ndp, $date.julian-date;
+        my $jd = sprintf '%-0.*f', $ndp, $date.julian-date;
+        is $jd, $JD, "cmp JD from DateTime.julian-date";
+    }
+    {
+        my $jd = sprintf '%-0.*f', $ndp, $date2.julian-date;
         is $jd, $JD, "cmp JD from DateTime.julian-date";
     }
 
     {
         my $mjd = $date.modified-julian-date;
+        my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 2_400_000.5
+        is $jd, $JD, "cmp JD from DateTime.modified-julian-date";
+    }
+    {
+        my $mjd = $date2.modified-julian-date;
         my $jd  = sprintf '%-0.*f', $ndp, $mjd + MJD0; # from the relationship: MJD = JD - 2_400_000.5
         is $jd, $JD, "cmp JD from DateTime.modified-julian-date";
     }

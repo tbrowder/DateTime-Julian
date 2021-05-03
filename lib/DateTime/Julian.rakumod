@@ -18,6 +18,9 @@ method new(:$julian-date, :$modified-julian-date) {
         # Use relationship: MJD = JD - MJD0 => JD = MJD + MJD0
         $JD = $modified-julian-date + MJD0
     }
+    else {
+        die "FATAL: No value provided to DateTime::Julian.new"
+    }
  
     # Given the Julian Date (JD) of an instant, determine its Gregorian UTC
     my $days = $JD - POS0;          # days from the POSIX epoch to the desired JD
