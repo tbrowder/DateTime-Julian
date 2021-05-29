@@ -34,10 +34,10 @@ Notation and symbols
 
 Richards' formulae refer to D/M/Y as the given
 calendar, D'/M'/Y' as the computational calendar,
-and J as the common and unabiguasly defined Julian day number (J)
+and J as the common and unabiguously defined Julian day number (J)
 for both.
 
-For this implementation we shall use Dp/Mp/Yp as the symbols for
-the computational calendar (and suffix other vars with 'p' as well).
+For this implementation we shall use D'c/M'c/Y'c as the symbols for
+the computational calendar (and suffix other variables with 'c as well).
 
 

@@ -53,7 +53,7 @@ constant %RC is export = [
     },
 ];
 
-sub g-for-input-Yp(\Yp) is export {
+sub g-for-input-Y'c(\Y'c) is export {
     # See Equation 25.26 on p. 319
 }
 
@@ -72,6 +72,8 @@ sub day-frac2hms(Real $x, :$debug --> List) is export {
     $hour, $minute, $second
 }
 
+# note the following sub is obsolete now that Raku DateTime has
+# method day-fraction
 sub day-frac(DateTime:D $dt, :$debug --> Real) is export {
     # Converts the hours, minutes, and seconds of an
     # instant into the decimal fraction of a 24-hour day.
@@ -84,30 +86,70 @@ sub day-frac(DateTime:D $dt, :$debug --> Real) is export {
     $frac /= sec-per-day;
 }
 
-sub cal2jd(\Y, \M, $D, :$input where /:i g|j/, :$output where /:i g|j/, :$debug --> Real) is export {
+sub cal2jd(\Y, \M, $D, 
+           Bool :$gregorian!, 
+           :$debug 
+           --> Real
+          ) is export {
     # Using Richards' Algorithm E, p. 323
 
     my \D = $D.Int;
-    my $day-frac = $D - D;
+    my \day-fraction = $D - D;
 
-    # convert to the intermediate calendar form using equations ?
+    # convert to the intermediate calendar form 
+    my \Y'c = Y + y - (n + m - I - M) / n; # Eq. 25.1
+    my \M'c = (M - m + n) mod r; # Eq. 25.2
+    my \D'c = D - 1; # Eq. 25.3
+    my \c = (p * Y'c + q) / r; # Eq. 25.8
+    my \d = () / u; # Eq. 25.9
 
-    # convert to the Gregorian calendar
+    # step 6
+    my $J;
+    if $gregorian {
+        # for the Gregorian calendar input
+        $J = c + d + D'c - j; # Eq. 25.7
+    }
+    else {
+        # for the Julian calendar input
+        my \g = ((Y'c + A) / 100) / 4 + G; # Eq. 25.26
+        $J = c + d + D'c - j - g; # Eq. 25.22
+    }
+    my \J = $J;
 
-    # convert to the Julian calendar
-    my $jd = 0;
     # add the day fraction back
-    $jd += $day-frac;
+    J + day-fraction
 } # sub cal2jd
 
-sub jd2cal($JD, :$gregorian = True, :$debug --> List) is export {
+sub jd2cal($JD, 
+           Bool :$gregorian!, 
+           :$debug 
+           --> List
+          ) is export {
     # Using Richards' Algorithm F, p. 324
-    my \JD = $JD.Int;
-    my $day-frac = $JD - JD;
+    my \J = $JD.Int;
+    my \day-fraction = $JD - J;
+    
+    # step 1
+    my $Jc;
+    if $gregorian {
+        my \g = 3 * ((4 * J + B) / 146097) / 4 + G; # Eq. 25.34
+        $Jc = J + j + g; # Eq. 25.23
+    }
+    else {
+        $Jc = J + j; # Eq. 25.10
+    }
+    my \J'c = $Jc;
+    my \Y'c = () / p; # Eq. 25.11
+    my \T'c = (() mod p) / r; # Eq. 25.12
+    my \M'c = # Eq. 25.13
+    my \D'c = # Eq. 25.14
 
-    my $da = 0;
+    my \D = D'c + 1; # Eq. 25.4
+    my \M = (() mod ) + 1; # Eq. 25.5
+    my \Y = Y'c - y + () / n; # Eq. 25.6
+
     # add the day fraction back
-    $da += $day-frac;
+    Y, M, D + day-fraction
 } # sub jd2cal
 
 sub gregorian2jd($y, $m, $d, :$debug --> Real) {
