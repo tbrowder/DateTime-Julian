@@ -50,10 +50,10 @@ my $tnum = 0;
 
 # The official start date for the Gregorian calendar
 # was October 15, 1582.
-constant GC = DateTime.new: :1582year, :10month, :15day;
-constant POS0 = 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
-constant MJD0 = 2_400_000.5; # JD in Gregorian calendar (1858-11-17T00:00:00Z)
-constant sec-per-day = 86_400;
+#constant GC = DateTime.new: :1582year, :10month, :15day;
+#constant POS0 = 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
+#constant MJD0 = 2_400_000.5; # JD in Gregorian calendar (1858-11-17T00:00:00Z)
+#constant sec-per-day = 86_400;
 
 for @baum-test-data -> $arr {
     ++$tnum;

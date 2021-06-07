@@ -46,17 +46,24 @@ If both arguments are entered, the *Julian Date* is used. If neither is entered,
 
 Note that currently none of the ordinary DateTime *new* methods can be used for instantiation, but that could be done if someone can justify it.
 
-### method MJD0
+Exported constants
+------------------
 
-    say $dt.MJD0 # OUTPUT: 2_400_000.5
+### MJD0
 
 Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T00:00:00Z.
 
-### method POSIX0
+    say MJD0;               # OUTPUT: «2_400_000.5␤»
+    # alternatively:
+    say mjd0;               # OUTPUT: «2_400_000.5␤»
 
-    say $dt.POSIX0 # OUTPUT: 2_440_587.5
+### POSIX0
 
 Returns the Julian Date value for the POSIX (Unix) epoch of 1970-01-01T00:00:00Z.
+
+    say POSIX0;               # OUTPUT: «2_440_587.5␤»
+    # alternatively:
+    say posix0;               # OUTPUT: «2_440_587.5␤»
 
 Class DateTime::Julian subroutines
 ----------------------------------
@@ -98,7 +105,7 @@ References
 AUTHOR
 ======
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder (tbrowder@cpan.org)
 
 COPYRIGHT AND LICENSE
 =====================

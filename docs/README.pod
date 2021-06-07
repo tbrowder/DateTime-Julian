@@ -73,24 +73,29 @@ Note that currently none of the ordinary DateTime I<new> methods can
 be used for instantiation, but that could be done if someone
 can justify it.
 
+=head2 Exported constants
 
-=head3 method MJD0
-
-=begin code
-say $dt.MJD0 # OUTPUT: 2_400_000.5
-=end code
+=head3 MJD0
 
 Returns the Julian Date value for the Modified Julian Date epoch
 of 1858-11-17T00:00:00Z.
 
-=head3 method POSIX0
-
 =begin code
-say $dt.POSIX0 # OUTPUT: 2_440_587.5
+say MJD0;               # OUTPUT: «2_400_000.5␤»
+# alternatively:
+say mjd0;               # OUTPUT: «2_400_000.5␤»
 =end code
+
+=head3 POSIX0
 
 Returns the Julian Date value for the POSIX (Unix) epoch
 of 1970-01-01T00:00:00Z.
+
+=begin code
+say POSIX0;               # OUTPUT: «2_440_587.5␤»
+# alternatively:
+say posix0;               # OUTPUT: «2_440_587.5␤»
+=end code
 
 =head2 Class DateTime::Julian subroutines
 
@@ -134,7 +139,7 @@ equivalent date in the Julian calendar.
 
 =head1 AUTHOR
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder (tbrowder@cpan.org)
 
 =head1 COPYRIGHT AND LICENSE
 
