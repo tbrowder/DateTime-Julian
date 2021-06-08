@@ -2,7 +2,7 @@ use Test;
 
 use DateTime::Julian;
 
-plan 3;
+plan 4;
 
 # ensure we can use normal DateTime instantiation for its child class
 lives-ok {
@@ -16,3 +16,8 @@ lives-ok {
 lives-ok {
     my $d = DateTime::Julian.new: "2045-03-09T13:14:09.12345Z";
 }, "Basic DateTime instantiation";
+
+dies-ok {
+    my $d = DateTime::Julian.new;
+}, "No valid DateTime new arg entered";
+
