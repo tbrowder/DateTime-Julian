@@ -1,9 +1,9 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+    - Added capability to use all the normal DateTime object instantiation methods
+    - Added method to show centuries since the J2000.0 epoch for astronomical calculations 
     - Improved the README
-    - Added LST and lst methods for Local Sidereal Time calculations
-    - Added dependency on DateTime::Location for use in LST methods
     - Added exported constants
     - Moved unnecessary modules to the dev directory for eventual removal
       after incorporation in other modules
