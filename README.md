@@ -3,7 +3,7 @@
 DateTime::Julian
 ================
 
-Provides a DateTime::Julian class (a subclass of Raku's class **DateTime**) that is instantiated by either a Julian Date (JD) or a Modified Julian Date (MJD).
+Provides a DateTime::Julian class (a subclass of Raku's class **DateTime**) that is instantiated by either a Julian Date (JD) or a Modified Julian Date (MJD) (or any of the DateTime instantiation methods).
 
 SYNOPSIS
 ========
@@ -42,19 +42,19 @@ Class DateTime::Julian methods
 
     new(:$julian-date, :$modified-julian-date) {...}
 
-If both arguments are entered, the *Julian Date* is used. If neither is entered, an exception is thrown.
-
-Note that currently none of the ordinary DateTime *new* methods can be used for instantiation, but that could be done if someone can justify it.
+If both arguments are entered, the *Julian Date* is used. If neither is entered, the user is expected to use one of the normal **DateTime** creation methods.
 
 Exported constants
 ------------------
+
+Several commonly used astronautical constants are exported.
 
 ### MJD0
 
 Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T00:00:00Z.
 
     say MJD0;               # OUTPUT: «2_400_000.5␤»
-    # alternatively:
+    # alternatively use aliases:
     say mjd0;               # OUTPUT: «2_400_000.5␤»
 
 ### POSIX0
@@ -62,27 +62,15 @@ Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T0
 Returns the Julian Date value for the POSIX (Unix) epoch of 1970-01-01T00:00:00Z.
 
     say POSIX0;               # OUTPUT: «2_440_587.5␤»
-    # alternatively:
+    # alternatively use aliases:
     say posix0;               # OUTPUT: «2_440_587.5␤»
 
-Class DateTime::Julian subroutines
-----------------------------------
+Class DateTime::Julian methods
+------------------------------
 
-### sub jcal2gcal
+### 
 
     my ($y, $m, $d) = jcal2gcal 1232, 12, 31;
-
-Converts a date in the Julian calendar to the equivalent date in the Gregorian calendar.
-
-[NOT YET IMPLEMENTED]
-
-### sub gcal2jcal
-
-    my ($y, $m, $d) = gcal2jcal 1232, 12, 31;
-
-Converts a date in the Gregorian calendar to the equivalent date in the Julian calendar.
-
-[NOT YET IMPLEMENTED]
 
 Notes
 =====

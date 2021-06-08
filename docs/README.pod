@@ -2,9 +2,10 @@
 
 =head1 DateTime::Julian
 
-Provides a DateTime::Julian class (a subclass of Raku's class B<DateTime>) 
-that is instantiated by either a Julian Date (JD) or a
-Modified Julian Date (MJD).
+Provides a DateTime::Julian class (a subclass of Raku's class
+B<DateTime>) that is instantiated by either a Julian Date (JD) or a
+Modified Julian Date (MJD) (or any of the DateTime instantiation
+methods).
 
 =head1 SYNOPSIS
 
@@ -18,13 +19,14 @@ my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
 
 =head1 DESCRIPTION
 
-Module B<DateTime::Julian> defines a class (inherited from a Raku I<DateTime> class) that
-is instantiated from a I<Julian Date> or a I<Modified Julian Date>.
+Module B<DateTime::Julian> defines a class (inherited from a Raku
+I<DateTime> class) that is instantiated from a I<Julian Date> or a
+I<Modified Julian Date>.
 
 Following are some pertinent definitions from Wikipedia topic
 [I<Julian day>](https://en.m.wikipedia.org/wiki/Julian_day):
 
-=item1 The B<Julian day> is the continuous count of the days since 
+=item1 The B<Julian day> is the continuous count of the days since
 the beginning of the Julian period, and is used primarily
 by astronomers....
 
@@ -37,26 +39,25 @@ and Lunar cycles) and which preceded any dates in recorded history. For example,
 the Julian day number for the day starting at 12:00 UT (noon) on January 1, 2000,
 was B<2451545>.
 
-=item1 The B<Julian date> (JD) of any instant is the Julian day number plus the fraction 
+=item1 The B<Julian date> (JD) of any instant is the Julian day number plus the fraction
 of a day since the preceding noon in Universal Time. Julian dates are
 expressed as a Julian day number with a decimal fraction added.
 For example, the Julian date for 00:30:00.0 UT January 1, 2013,
 is B<2456293.520833>.
 
-The following methods and routines were developed from the descriptions of
-code in L<References 1 and 2|#References>.
-The author of Ref. 3 has been very helpful with this author's questions
-about astronomy and the implementation of astronomical routines.
+The following methods and routines were developed from the
+descriptions of code in L<References 1 and 2|#References>.  The author
+of Ref. 3 has been very helpful with this author's questions about
+astronomy and the implementation of astronomical routines.
 
-The main purpose of this module is to simplify
-time and handling for this author who still finds Julian dates
-to be somewhat mysterious, but absolutely necessary
-for dealing with astronomy and predicting object positions, especially
-the Sun and Moon, for local observation and producing astronomical
-almanacs.
+The main purpose of this module is to simplify time and handling for
+this author who still finds Julian dates to be somewhat mysterious,
+but absolutely necessary for dealing with astronomy and predicting
+object positions, especially the Sun and Moon, for local observation
+and producing astronomical almanacs.
 
-This module will play a major supporting role in this author's planned Raku module 
-B<Astro::Almanac>;
+This module will play a major supporting role in this author's planned
+Raku module B<Astro::Almanac>;
 
 =head2 Class DateTime::Julian methods
 
@@ -66,14 +67,29 @@ B<Astro::Almanac>;
 new(:$julian-date, :$modified-julian-date) {...}
 =end code
 
-If both arguments are entered, the I<Julian Date> is used. If neither is
-entered, an exception is thrown.
+If both arguments are entered, the I<Julian Date> is used. If neither
+is entered, the user is expected to use one of the normal B<DateTime>
+creation methods.
 
-Note that currently none of the ordinary DateTime I<new> methods can
-be used for instantiation, but that could be done if someone
-can justify it.
+=head3 method jdcent2000
+
+=begin code
+jdcent2000(--> Real:D) {...}
+# alternatively use aliases:
+method cent2000(--> Real:D)  {...}
+method c2000(--> Real:D)     {...}
+method jdc2000(--> Real:D)   {...}
+method t2000(--> Real:D)     {...}
+method jc2000(--> Real:D)    {...}
+=end code
+
+Returns time as the number of Julian centuries since epoch J2000.0
+(time value used by Astro::Montenbruck for planet position
+calculations).
 
 =head2 Exported constants
+
+Several commonly used astronautical constants are exported.
 
 =head3 MJD0
 
@@ -82,7 +98,7 @@ of 1858-11-17T00:00:00Z.
 
 =begin code
 say MJD0;               # OUTPUT: «2_400_000.5␤»
-# alternatively:
+# alternatively use aliases:
 say mjd0;               # OUTPUT: «2_400_000.5␤»
 =end code
 
@@ -93,33 +109,83 @@ of 1970-01-01T00:00:00Z.
 
 =begin code
 say POSIX0;               # OUTPUT: «2_440_587.5␤»
-# alternatively:
+# alternatively use alias:
 say posix0;               # OUTPUT: «2_440_587.5␤»
 =end code
 
-=head2 Class DateTime::Julian subroutines
+=head3 JCE
 
-=head3 sub jcal2gcal
-
-=begin code
-my ($y, $m, $d) = jcal2gcal 1232, 12, 31;
-=end code
-
-Converts a date in the Julian calendar to the
-equivalent date in the Gregorian calendar.
-
-[NOT YET IMPLEMENTED]
-
-=head3 sub gcal2jcal
+The last day the Julian calendar was used. A DateTime object
+for 1582-10-04T00:00:00Z.
 
 =begin code
-my ($y, $m, $d) = gcal2jcal 1232, 12, 31;
+say JCE;
+# alternatively use alias:
+say jce;
 =end code
 
-Converts a date in the Gregorian calendar to the
-equivalent date in the Julian calendar.
+=head3 GC0
 
-[NOT YET IMPLEMENTED]
+The official start date for the Gregorian calendar. A DateTime object
+for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost days").
+
+=begin code
+say GC0;
+# alternatively use alias:
+say gc0;
+=end code
+
+=head3 sec-per-day
+
+Seconds per 24-hour day.
+
+=begin code
+say sec-per-day;
+=end code
+
+=head3 sec-per-jcen
+
+Seconds per Julian century.
+
+=begin code
+say sec-per-jcen;
+=end code
+
+=head3 days-per-jcen
+
+Days per Julian century.
+
+=begin code
+say days-per-jcen;
+=end code
+
+=head3 J2000
+
+Julian date for 2000-01-01T12:00:00Z (astronomical epoch 2000.0).
+
+=begin code
+say J2000;
+# alternatively use alias:
+say j2000;
+=end code
+
+=head3 J1900
+
+Julian date for 1899-12-31T12:00:00Z (astronomical epoch 1900.0).
+
+=begin code
+say J1900;
+# alternatively use alias:
+say j1900;
+=end code
+
+=head3 solar2sidereal
+
+Difference between Sidereal and Solar hour (the former is shorter).
+
+=begin code
+say solar2sidereal;
+=end code
 
 =head1 Notes
 
