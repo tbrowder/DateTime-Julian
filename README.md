@@ -14,6 +14,7 @@ my $jd  = nnnn.nnnn; # Julian Date for some event
 my $mjd = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
+my $d = DateTime::Julian.new(now);
 ```
 
 DESCRIPTION
@@ -44,6 +45,18 @@ Class DateTime::Julian methods
 
 If both arguments are entered, the *Julian Date* is used. If neither is entered, the user is expected to use one of the normal **DateTime** creation methods.
 
+### method jdcent2000
+
+    jdcent2000(--> Real:D) {...}
+    # alternatively use aliases:
+    method cent2000(--> Real:D)  {...}
+    method c2000(--> Real:D)     {...}
+    method jdc2000(--> Real:D)   {...}
+    method t2000(--> Real:D)     {...}
+    method jc2000(--> Real:D)    {...}
+
+Returns time as the number of Julian centuries since epoch J2000.0 (time value used by Astro::Montenbruck for planet position calculations).
+
 Exported constants
 ------------------
 
@@ -62,15 +75,64 @@ Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T0
 Returns the Julian Date value for the POSIX (Unix) epoch of 1970-01-01T00:00:00Z.
 
     say POSIX0;               # OUTPUT: «2_440_587.5␤»
-    # alternatively use aliases:
+    # alternatively use alias:
     say posix0;               # OUTPUT: «2_440_587.5␤»
 
-Class DateTime::Julian methods
-------------------------------
+### JCE
 
-### 
+The last day the Julian calendar was used. A DateTime object for 1582-10-04T00:00:00Z.
 
-    my ($y, $m, $d) = jcal2gcal 1232, 12, 31;
+    say JCE;
+    # alternatively use alias:
+    say jce;
+
+### GC0
+
+The official start date for the Gregorian calendar. A DateTime object for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost days").
+
+    say GC0;
+    # alternatively use alias:
+    say gc0;
+
+### sec-per-day
+
+Seconds per 24-hour day.
+
+    say sec-per-day;
+
+### sec-per-jcen
+
+Seconds per Julian century.
+
+    say sec-per-jcen;
+
+### days-per-jcen
+
+Days per Julian century.
+
+    say days-per-jcen;
+
+### J2000
+
+Julian date for 2000-01-01T12:00:00Z (astronomical epoch 2000.0).
+
+    say J2000;
+    # alternatively use alias:
+    say j2000;
+
+### J1900
+
+Julian date for 1899-12-31T12:00:00Z (astronomical epoch 1900.0).
+
+    say J1900;
+    # alternatively use alias:
+    say j1900;
+
+### solar2sidereal
+
+Difference between Sidereal and Solar hour (the former is shorter).
+
+    say solar2sidereal;
 
 Notes
 =====

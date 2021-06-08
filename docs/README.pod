@@ -15,6 +15,7 @@ my $jd  = nnnn.nnnn; # Julian Date for some event
 my $mjd = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
+my $d = DateTime::Julian.new(now);
 =end code
 
 =head1 DESCRIPTION
