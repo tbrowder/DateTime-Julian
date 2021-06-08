@@ -47,41 +47,23 @@ method new(:$julian-date, :$modified-julian-date, |c) {
 
 }
 
+# aliases
+method jcent2000(--> Real:D) { self.jdcent2000 }
+method cent2000(--> Real:D)  { self.jdcent2000 }
+method c2000(--> Real:D)     { self.jdcent2000 }
+method jdc2000(--> Real:D)   { self.jdcent2000 }
+
 method jdcent2000(--> Real:D) {
     # Returns number of centuries since epoch J2000.0 (time value
     # used by Astro::Montenbruck for planet position
-    # calculations)
-    ($!julian-date - 2458630.5)/36525;
+    # calculations).
+    (self.julian-date - J2000)/36525;
 }
 
 method posix-real($in-timezone? --> Real:D) {
     self.posix($in-timezone) + self.second - self.second.Int    
 }
 
-# Local Sidereal Time (LST)
-#
-# Given that this DateTime object is the UTC for a celestial object
-# on the Earth's Prime Meridian, the LST is the UTC at the observer's 
-# location when the object is at the observer's meridian (transit).
-#
-# The determination relies on the Earth's rotational speed of 360 degrees
-# per day which equates to 15 degrees of longitude per hour. With
-# the observer's longitude as a decimal, the LST is UTC plus (for west
-# longitudes) or minus (for east longitudes) longitude divided by 15. 
-# The resulting UTC is expressed as a DateTime object.
-multi method lst(DateTime::Location $d --> DateTime) {
-    self.LST: $d
+method Posix($in-timezone? --> Real:D) {
+    self.posix($in-timezone) + self.second - self.second.Int    
 }
-
-multi method LST(DateTime::Location $d --> DateTime) {
-    # uses a DateTime::Location object
-}
-
-multi method lst($lon --> DateTime) {
-    self.LST: $lon
-}
-
-multi method LST($lon --> DateTime) {
-    # uses an input longitude in various formats
-}
-

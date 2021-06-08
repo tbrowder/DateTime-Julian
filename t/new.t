@@ -4,6 +4,7 @@ use DateTime::Julian;
 
 plan 3;
 
+# ensure we can use normal DateTime instantiation for its child class
 lives-ok {
     my $d = DateTime::Julian.new(now);
 }, "Basic DateTime instantiation";
