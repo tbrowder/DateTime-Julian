@@ -22,7 +22,7 @@ constant J1900          is export = 2_415_020;    # JD for 1899-12-31T12:00:00Z 
 constant j1900          is export = J1900;
 constant solar2sidereal is export = 1.002_737_909_350_795 ; # Difference between Sidereal and Solar hour (the former is shorter)
 
-method new(:$julian-date, :$modified-julian-date) {
+multi method new(:$julian-date, :$modified-julian-date, |c) {
     # Convert the input value to the suitable POSIX value
     # to instantiate the DateTime object.
     my $JD;
