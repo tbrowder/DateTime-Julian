@@ -31,20 +31,21 @@ Following are some pertinent definitions from Wikipedia topic
 the beginning of the Julian period, and is used primarily
 by astronomers....
 
-=item1 The B<Julian day number> (JDN) is the integer assigned to
-a whole solar day count starting from noon Universal time, with Julian
-day number 0 assigned to the day starting at noon on Monday, January 1, 4713 BC,
-proleptic [Note 1] Julian calendar (November 24, 4714 BC, in the proleptic Gregorian calendar),
-a date at which three multi-year cycles started (which are: indiction, Solar,
-and Lunar cycles) and which preceded any dates in recorded history. For example,
-the Julian day number for the day starting at 12:00 UT (noon) on January 1, 2000,
+=item1 The B<Julian day number> (JDN) is the integer assigned to a
+whole solar day count starting from noon Universal time, with Julian
+day number 0 assigned to the day starting at noon on Monday, January
+1, 4713 BC, proleptic [Note 1] Julian calendar (November 24, 4714 BC,
+in the proleptic Gregorian calendar), a date at which three multi-year
+cycles started (which are: indiction, Solar, and Lunar cycles) and
+which preceded any dates in recorded history. For example, the Julian
+day number for the day starting at 12:00 UT (noon) on January 1, 2000,
 was B<2451545>.
 
-=item1 The B<Julian date> (JD) of any instant is the Julian day number plus the fraction
-of a day since the preceding noon in Universal Time. Julian dates are
-expressed as a Julian day number with a decimal fraction added.
-For example, the Julian date for 00:30:00.0 UT January 1, 2013,
-is B<2456293.520833>.
+=item1 The B<Julian date> (JD) of any instant is the Julian day number
+plus the fraction of a day since the preceding noon in Universal
+Time. Julian dates are expressed as a Julian day number with a decimal
+fraction added.  For example, the Julian date for 00:30:00.0 UT
+January 1, 2013, is B<2456293.520833>.
 
 The following methods and routines were developed from the
 descriptions of code in L<References 1 and 2|#References>.  The author
@@ -98,9 +99,9 @@ Returns the Julian Date value for the Modified Julian Date epoch
 of 1858-11-17T00:00:00Z.
 
 =begin code
-say MJD0;               # OUTPUT: «2_400_000.5␤»
+say MJD0;               # OUTPUT: «␤»
 # alternatively use aliases:
-say mjd0;               # OUTPUT: «2_400_000.5␤»
+say mjd0;               # OUTPUT: «␤»
 =end code
 
 =head3 POSIX0
@@ -109,9 +110,9 @@ Returns the Julian Date value for the POSIX (Unix) epoch
 of 1970-01-01T00:00:00Z.
 
 =begin code
-say POSIX0;               # OUTPUT: «2_440_587.5␤»
+say POSIX0;               # OUTPUT: «␤»
 # alternatively use alias:
-say posix0;               # OUTPUT: «2_440_587.5␤»
+say posix0;               # OUTPUT: «␤»
 =end code
 
 =head3 JCE
@@ -120,44 +121,21 @@ The last day the Julian calendar was used. A DateTime object
 for 1582-10-04T00:00:00Z.
 
 =begin code
-say JCE;
+say JCE;                 # OUTPUT: «␤»
 # alternatively use alias:
-say jce;
+say jce;                 # OUTPUT: «␤»
 =end code
 
 =head3 GC0
 
 The official start date for the Gregorian calendar. A DateTime object
-for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost days").
+for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost
+days").
 
 =begin code
-say GC0;
+say GC0;                 # OUTPUT: «␤»
 # alternatively use alias:
-say gc0;
-=end code
-
-=head3 sec-per-day
-
-Seconds per 24-hour day.
-
-=begin code
-say sec-per-day;
-=end code
-
-=head3 sec-per-jcen
-
-Seconds per Julian century.
-
-=begin code
-say sec-per-jcen;
-=end code
-
-=head3 days-per-jcen
-
-Days per Julian century.
-
-=begin code
-say days-per-jcen;
+say gc0;                 # OUTPUT: «␤»
 =end code
 
 =head3 J2000
@@ -165,9 +143,9 @@ say days-per-jcen;
 Julian date for 2000-01-01T12:00:00Z (astronomical epoch 2000.0).
 
 =begin code
-say J2000;
+say J2000;               # OUTPUT: «␤»
 # alternatively use alias:
-say j2000;
+say j2000;               # OUTPUT: «␤»
 =end code
 
 =head3 J1900
@@ -175,9 +153,33 @@ say j2000;
 Julian date for 1899-12-31T12:00:00Z (astronomical epoch 1900.0).
 
 =begin code
-say J1900;
+say J1900;               # OUTPUT: «␤»
 # alternatively use alias:
-say j1900;
+say j1900;               # OUTPUT: «␤»
+=end code
+
+=head3 sec-per-day
+
+Seconds per 24-hour day.
+
+=begin code
+say sec-per-day;         # OUTPUT: «␤»
+=end code
+
+=head3 sec-per-jcen
+
+Seconds per Julian century.
+
+=begin code
+say sec-per-jcen;        # OUTPUT: «␤»
+=end code
+
+=head3 days-per-jcen
+
+Days per Julian century.
+
+=begin code
+say days-per-jcen;       # OUTPUT: «␤»
 =end code
 
 =head3 solar2sidereal
@@ -185,7 +187,7 @@ say j1900;
 Difference between Sidereal and Solar hour (the former is shorter).
 
 =begin code
-say solar2sidereal;
+say solar2sidereal;      # OUTPUT: «␤»
 =end code
 
 =head1 Notes
