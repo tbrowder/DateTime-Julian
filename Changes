@@ -1,6 +1,8 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+
+1.0.0  2021-06-08T20:52:41-05:00
     - Added capability to use all the normal DateTime object instantiation methods
     - Added method to show centuries since the J2000.0 epoch for astronomical calculations 
     - Improved the README

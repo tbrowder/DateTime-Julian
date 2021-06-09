@@ -1,4 +1,4 @@
-unit class DateTime::Julian:ver<0.0.2>:auth<cpan:TBROWDER> is DateTime is export;
+unit class DateTime::Julian:ver<1.0.0>:auth<cpan:TBROWDER> is DateTime is export;
 
 # The last day the Julian calendar was used:
 constant JCE            is export = DateTime.new: :1582year, :10month, :4day;
