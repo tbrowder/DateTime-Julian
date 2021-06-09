@@ -66,73 +66,73 @@ Several commonly used astronautical constants are exported.
 
 Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T00:00:00Z.
 
-    say MJD0;               # OUTPUT: «␤»
+    say MJD0;               # OUTPUT: «2400000.5␤»
     # alternatively use aliases:
-    say mjd0;               # OUTPUT: «␤»
+    say mjd0;               # OUTPUT: «2400000.5␤»
 
 ### POSIX0
 
 Returns the Julian Date value for the POSIX (Unix) epoch of 1970-01-01T00:00:00Z.
 
-    say POSIX0;               # OUTPUT: «␤»
+    say POSIX0;               # OUTPUT: «2440587.5␤»
     # alternatively use alias:
-    say posix0;               # OUTPUT: «␤»
+    say posix0;               # OUTPUT: «2440587.5␤»
 
 ### JCE
 
 The last day the Julian calendar was used. A DateTime object for 1582-10-04T00:00:00Z.
 
-    say JCE;                 # OUTPUT: «␤»
+    say JCE;                 # OUTPUT: «1582-10-04T00:00:00Z␤»
     # alternatively use alias:
-    say jce;                 # OUTPUT: «␤»
+    say jce;                 # OUTPUT: «1582-10-04T00:00:00Z␤»
 
 ### GC0
 
 The official start date for the Gregorian calendar. A DateTime object for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost days").
 
-    say GC0;                 # OUTPUT: «␤»
+    say GC0;                 # OUTPUT: «1582-10-15T00:00:00Z␤»
     # alternatively use alias:
-    say gc0;                 # OUTPUT: «␤»
+    say gc0;                 # OUTPUT: «1582-10-15T00:00:00Z␤»
 
 ### J2000
 
 Julian date for 2000-01-01T12:00:00Z (astronomical epoch 2000.0).
 
-    say J2000;               # OUTPUT: «␤»
+    say J2000;               # OUTPUT: «2451545␤»
     # alternatively use alias:
-    say j2000;               # OUTPUT: «␤»
+    say j2000;               # OUTPUT: «2451545␤»
 
 ### J1900
 
 Julian date for 1899-12-31T12:00:00Z (astronomical epoch 1900.0).
 
-    say J1900;               # OUTPUT: «␤»
+    say J1900;               # OUTPUT: «2415020␤»
     # alternatively use alias:
-    say j1900;               # OUTPUT: «␤»
+    say j1900;               # OUTPUT: «2415020␤»
 
 ### sec-per-day
 
 Seconds per 24-hour day.
 
-    say sec-per-day;         # OUTPUT: «␤»
+    say sec-per-day;         # OUTPUT: «86400␤»
 
 ### sec-per-jcen
 
 Seconds per Julian century.
 
-    say sec-per-jcen;        # OUTPUT: «␤»
+    say sec-per-jcen;        # OUTPUT: «3155760000␤»
 
 ### days-per-jcen
 
 Days per Julian century.
 
-    say days-per-jcen;       # OUTPUT: «␤»
+    say days-per-jcen;       # OUTPUT: «36525␤»
 
 ### solar2sidereal
 
 Difference between Sidereal and Solar hour (the former is shorter).
 
-    say solar2sidereal;      # OUTPUT: «␤»
+    say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 
 Notes
 =====

@@ -99,9 +99,9 @@ Returns the Julian Date value for the Modified Julian Date epoch
 of 1858-11-17T00:00:00Z.
 
 =begin code
-say MJD0;               # OUTPUT: «␤»
+say MJD0;               # OUTPUT: «2400000.5␤»
 # alternatively use aliases:
-say mjd0;               # OUTPUT: «␤»
+say mjd0;               # OUTPUT: «2400000.5␤»
 =end code
 
 =head3 POSIX0
@@ -110,9 +110,9 @@ Returns the Julian Date value for the POSIX (Unix) epoch
 of 1970-01-01T00:00:00Z.
 
 =begin code
-say POSIX0;               # OUTPUT: «␤»
+say POSIX0;               # OUTPUT: «2440587.5␤»
 # alternatively use alias:
-say posix0;               # OUTPUT: «␤»
+say posix0;               # OUTPUT: «2440587.5␤»
 =end code
 
 =head3 JCE
@@ -121,9 +121,9 @@ The last day the Julian calendar was used. A DateTime object
 for 1582-10-04T00:00:00Z.
 
 =begin code
-say JCE;                 # OUTPUT: «␤»
+say JCE;                 # OUTPUT: «1582-10-04T00:00:00Z␤»
 # alternatively use alias:
-say jce;                 # OUTPUT: «␤»
+say jce;                 # OUTPUT: «1582-10-04T00:00:00Z␤»
 =end code
 
 =head3 GC0
@@ -133,9 +133,9 @@ for 1582-1014T00:00:00Z. The days of 5-14 were skipped (the 10 "lost
 days").
 
 =begin code
-say GC0;                 # OUTPUT: «␤»
+say GC0;                 # OUTPUT: «1582-10-15T00:00:00Z␤»
 # alternatively use alias:
-say gc0;                 # OUTPUT: «␤»
+say gc0;                 # OUTPUT: «1582-10-15T00:00:00Z␤»
 =end code
 
 =head3 J2000
@@ -143,9 +143,9 @@ say gc0;                 # OUTPUT: «␤»
 Julian date for 2000-01-01T12:00:00Z (astronomical epoch 2000.0).
 
 =begin code
-say J2000;               # OUTPUT: «␤»
+say J2000;               # OUTPUT: «2451545␤»
 # alternatively use alias:
-say j2000;               # OUTPUT: «␤»
+say j2000;               # OUTPUT: «2451545␤»
 =end code
 
 =head3 J1900
@@ -153,9 +153,9 @@ say j2000;               # OUTPUT: «␤»
 Julian date for 1899-12-31T12:00:00Z (astronomical epoch 1900.0).
 
 =begin code
-say J1900;               # OUTPUT: «␤»
+say J1900;               # OUTPUT: «2415020␤»
 # alternatively use alias:
-say j1900;               # OUTPUT: «␤»
+say j1900;               # OUTPUT: «2415020␤»
 =end code
 
 =head3 sec-per-day
@@ -163,7 +163,7 @@ say j1900;               # OUTPUT: «␤»
 Seconds per 24-hour day.
 
 =begin code
-say sec-per-day;         # OUTPUT: «␤»
+say sec-per-day;         # OUTPUT: «86400␤»
 =end code
 
 =head3 sec-per-jcen
@@ -171,7 +171,7 @@ say sec-per-day;         # OUTPUT: «␤»
 Seconds per Julian century.
 
 =begin code
-say sec-per-jcen;        # OUTPUT: «␤»
+say sec-per-jcen;        # OUTPUT: «3155760000␤»
 =end code
 
 =head3 days-per-jcen
@@ -179,7 +179,7 @@ say sec-per-jcen;        # OUTPUT: «␤»
 Days per Julian century.
 
 =begin code
-say days-per-jcen;       # OUTPUT: «␤»
+say days-per-jcen;       # OUTPUT: «36525␤»
 =end code
 
 =head3 solar2sidereal
@@ -187,7 +187,7 @@ say days-per-jcen;       # OUTPUT: «␤»
 Difference between Sidereal and Solar hour (the former is shorter).
 
 =begin code
-say solar2sidereal;      # OUTPUT: «␤»
+say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 =end code
 
 =head1 Notes
