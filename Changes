@@ -1,6 +1,8 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+
+1.1.0  2022-09-24T11:50:24-05:00
     - Add method gmst for Greenwich Mean Sidereal Time
     - Add method lst for Local Sidereal Time
     - Add method jd0 for the Julian Date for January 0.0 of the instant's year
