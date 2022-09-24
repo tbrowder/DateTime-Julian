@@ -137,7 +137,7 @@ Difference between Sidereal and Solar hour (the former is shorter).
     say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 
 To do
------
+=====
 
 Add calculations (and tests) for Ephemeral Time and Universal Time. (See Ref. 1, section 3.4, p. 41.) 
 
@@ -162,10 +162,10 @@ References
 AUTHOR
 ======
 
-Tom Browder (tbrowder@cpan.org)
+Tom Browder (tbrowder@acm.org)
 
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright © 2021 Tom Browder
+© 2021-2022 Tom Browder
 
