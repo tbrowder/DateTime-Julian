@@ -1,4 +1,7 @@
-unit class DateTime::Julian:ver<1.0.0>:auth<cpan:TBROWDER> is DateTime is export;
+unit class DateTime::Julian is DateTime;
+
+use Math::Trig:auth<zef:tbrowder> :ALL;
+use Astro::Utils :ALL;
 
 # The last day the Julian calendar was used:
 constant JCE            is export = DateTime.new: :1582year, :10month, :4day;
@@ -18,6 +21,8 @@ constant mjd0           is export = MJD0;
 constant sec-per-day    is export = 86_400;
 constant sec-per-cen    is export = 3_155_760_000; # a Julian century
 constant days-per-jcen  is export = 36_525;        # a Julian century
+constant days-per-jcent is export = 36_525;        # a Julian century
+constant days-per-cen   is export = 36_525;        # a Julian century
 
 constant J2000          is export = 2_451_545;     # JD for 2000-01-01T12:00:00Z (astronomical epoch 2000.0)
 constant j2000          is export = J2000;
@@ -53,7 +58,7 @@ method new(:$julian-date, :$modified-julian-date, |c) {
 
 method jdcent2000(--> Real:D) {
     # Returns time as the number of Julian centuries since epoch
-    # J2000.0 (time value # used by Astro::Montenbruck for planet
+    # J2000.0 (time value used by Montenbruck for planet
     # position calculations).
     (self.julian-date - J2000)/days-per-jcen
 }
@@ -64,3 +69,42 @@ method c2000(--> Real:D)     { self.jdcent2000 }
 method jdc2000(--> Real:D)   { self.jdcent2000 }
 method t2000(--> Real:D)     { self.jdcent2000 }
 method jc2000(--> Real:D)    { self.jdcent2000 }
+
+method jd0(--> Real) {
+    # calculate the JD for January 0.0 of the current year
+    # see Montenbruck, p. 40
+    
+}
+
+method gmst(--> Real) {
+    # calculate Greenwich Mean Sidereal Time (GMST)
+    # return as decimal hours in the range [-12..12]
+    # see Montenbruck, p. 40
+    constant pi2 = pi/2;
+
+    my \mjd  = self.modified-julian-date;
+    my \mjd0 = self.modified-julian-date.floor;
+    my \UT   = self.day-fraction;
+    my \T0   = (mjd0 - 51544.5)/days-per-jcent;
+    my \T    = (mjd  - 51544.5)/days-per-jcent;
+    my \GMST = 24110.5481 + 8640184.812866 * T0 + 1.0027379093 * UT
+               + (0.093104 - 6.2e-6 * T) * T * T;    # seconds
+    (pi2 / sec-per-day) * (GMST % sec-per-day);      # radians
+}
+
+method lst(Real \lon,             # decimal degrees
+          :$east-positive = True, # some using programs may have west longitudes positive
+                                  # (e.g., Meeus, Astro::Montenbruck)
+          --> Real) {
+    # calculate Local Sidereal Time (LST)
+    # see Montenbruck, p. 41
+}
+
+method ephemeris-time(--> Real) {
+    # using code from Perl Astro::Montenbruck
+    #   file ''
+
+    
+}
+
+

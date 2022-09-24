@@ -1,7 +1,7 @@
 use Test;
 
 use DateTime::Julian;
-use Math::FractionalPart :ALL;
+use Math::FractionalPart :frac;
 
 plan 16;
 
@@ -16,9 +16,11 @@ is $d.c2000, $t;
 # subs from Montenbruck, p. 8
 # show they are the same as the Raku versions
 sub Frac($x) {
+    # same as Math::FractionalPart.frac
     $x - $x.floor
 }
 sub Modulo($x, $y) {
+    # same as Raku infix % operator 
     $y * Frac($x/$y)
 }
 
@@ -44,7 +46,8 @@ is Modulo($c,$a), ($c % $a);
 is Modulo($c,$b), ($c % $b);
 is Modulo($c,$c), ($c % $c);
 
-
-
-
+# test the Ephemeris Time given on 
+# p. 43 of Montenbruck
+my $dt = DateTime::Julian.new: "1982-01-01T00:00:00Z";
+say $dt.second;
 

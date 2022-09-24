@@ -1,6 +1,12 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+    - Add method gmst for Greenwich Mean Sidereal Time
+    - Add method lst for Local Sidereal Time
+    - Add method jd0 for the Julian Date for January 0.0 of the instant's year
+    - Add dependency for Math::Trig:auth<zef:tbrowder>
+    - Add tests for new features
+    - Add a TODO section
 
 1.0.0  2021-06-08T20:52:41-05:00
     - Added capability to use all the normal DateTime object instantiation methods
