@@ -1,6 +1,7 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+    - Delete raw text copy of LICENSE
 
 1.1.0  2022-09-24T11:50:24-05:00
     - Add method gmst for Greenwich Mean Sidereal Time
