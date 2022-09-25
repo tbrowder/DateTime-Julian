@@ -1,6 +1,8 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+
+1.1.1  2022-09-25T04:53:45-05:00
     - Delete raw text copy of LICENSE
 
 1.1.0  2022-09-24T11:50:24-05:00
