@@ -1,6 +1,9 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+    - Add 3OS tests
+    - Update copyright date
+    - Tweak docs
 
 1.1.1  2022-09-25T04:53:45-05:00
     - Delete raw text copy of LICENSE
