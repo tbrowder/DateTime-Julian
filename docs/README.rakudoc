@@ -195,7 +195,7 @@ say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 =head1 To do
 
 Add calculations (and tests) for Ephemeral Time and Universal Time.
-(See Ref. 1, section 3.4, p. 41.) 
+(See Ref. 1, section 3.4, p. 41.)
 
 =head1 Notes
 
@@ -219,6 +219,6 @@ Tom Browder (tbrowder@acm.org)
 
 =head1 COPYRIGHT AND LICENSE
 
-E<0x00a9> 2021-2022 Tom Browder
+E<0x00a9> 2021-2022, 2024 Tom Browder
 
 =end pod

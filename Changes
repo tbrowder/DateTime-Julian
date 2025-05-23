@@ -4,6 +4,7 @@ Revision history for DateTime-Julian
     - Add 3OS tests
     - Update copyright date
     - Tweak docs
+    - Add a method to get the Julian Date by longitude
 
 1.1.1  2022-09-25T04:53:45-05:00
     - Delete raw text copy of LICENSE
@@ -18,7 +19,7 @@ Revision history for DateTime-Julian
 
 1.0.0  2021-06-08T20:52:41-05:00
     - Added capability to use all the normal DateTime object instantiation methods
-    - Added method to show centuries since the J2000.0 epoch for astronomical calculations 
+    - Added method to show centuries since the J2000.0 epoch for astronomical calculations
     - Improved the README
     - Added exported constants
     - Moved unnecessary modules to the dev directory for eventual removal

@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/DateTime-Julian/workflows/test/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions)
+[![Actions Status](https://github.com/tbrowder/DateTime-Julian/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions) [![Actions Status](https://github.com/tbrowder/DateTime-Julian/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions) [![Actions Status](https://github.com/tbrowder/DateTime-Julian/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/DateTime-Julian/actions)
 
 DateTime::Julian
 ================
@@ -139,7 +139,7 @@ Difference between Sidereal and Solar hour (the former is shorter).
 To do
 =====
 
-Add calculations (and tests) for Ephemeral Time and Universal Time. (See Ref. 1, section 3.4, p. 41.) 
+Add calculations (and tests) for Ephemeral Time and Universal Time. (See Ref. 1, section 3.4, p. 41.)
 
 Notes
 =====
@@ -167,5 +167,5 @@ Tom Browder (tbrowder@acm.org)
 COPYRIGHT AND LICENSE
 =====================
 
-© 2021-2022 Tom Browder
+© 2021-2022, 2024 Tom Browder
 
