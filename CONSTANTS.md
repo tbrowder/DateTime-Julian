@@ -25,6 +25,8 @@ I am happy to add new ones if you wish--just file an issue.
     constant MJD0 is export(:MJD0) = 2_400_000.5; 
     constant mjd0 is export(:mjd0) = MJD0;
 
+### Day constants
+
     constant minutes-per-day is export(:minutes-per-day) = 1_440;
     constant min-per-day     is export(:min-per-day)     = 1_440;
 
@@ -37,12 +39,12 @@ I am happy to add new ones if you wish--just file an issue.
     constant days-per-jcent is export(:days-per-jcent) = 36_525;        
     constant days-per-cen   is export(:days-per-cen)   = 36_525;
 
-### JD for 2000-01-01T12:00:00Z # (astronomical epoch 2000.0)
+### JD for 2000-01-01T12:00:00Z (astronomical epoch 2000.0)
 
     constant J2000 is export(:J2000) = 2_451_545;    
     constant j2000 is export(:j2000) = J2000;
 
-### JD for 1899-12-31T12:00:00Z # (astronomical epoch 1900.0)
+### JD for 1899-12-31T12:00:00Z (astronomical epoch 1900.0)
 
     constant J1900 is export(:J1900) = 2_415_020;     
     constant j1900 is export(:j1900) = J1900;
