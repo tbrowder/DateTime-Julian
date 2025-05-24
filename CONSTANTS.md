@@ -15,12 +15,12 @@ I am happy to add new ones if you wish--just file an issue.
     constant GC0 is export(:GC0) = DateTime.new: :1582year, :10month, :15day;
     constant gc0 is export(:gc0) = GC0;
 
-### Julian Date (JD) in the Gregorian calendar (1970-01-01T00:00:00Z)
+### Posix0: Julian Date (JD) in the Gregorian calendar (1970-01-01T00:00:00Z)
 
     constant POSIX0 is export(:POSIX0) = 2_440_587.5; 
     constant posix0 is export(:posix0) = POSIX0;
 
-### JD in Gregorian calendar (1858-11-17T00:00:00Z)
+### MJD0: JD in Gregorian calendar (1858-11-17T00:00:00Z)
 
     constant MJD0 is export(:MJD0) = 2_400_000.5; 
     constant mjd0 is export(:mjd0) = MJD0;
