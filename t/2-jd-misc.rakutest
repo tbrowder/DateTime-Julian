@@ -3,8 +3,6 @@ use Test;
 use DateTime::Julian;
 use Math::FractionalPart :frac;
 
-plan 16;
-
 # check some miscellanous calculations
 
 # from Perl module Astro::Montenbruck, script/simple_ephem.pl
@@ -50,4 +48,6 @@ is Modulo($c,$c), ($c % $c);
 # p. 43 of Montenbruck
 my $dt = DateTime::Julian.new: "1982-01-01T00:00:00Z";
 say $dt.second;
+
+done-testing;
 

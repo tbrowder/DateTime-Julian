@@ -17,6 +17,7 @@ my $mjd = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
 my $d = DateTime::Julian.new(now);
+my $d = DateTime::Julian.now;
 ```
 
 DESCRIPTION
@@ -167,5 +168,5 @@ Tom Browder (tbrowder@acm.org)
 COPYRIGHT AND LICENSE
 =====================
 
-© 2021-2022, 2024 Tom Browder
+© 2021-2022, 2024-2025 Tom Browder
 

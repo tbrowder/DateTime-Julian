@@ -1,0 +1,8 @@
+Ensure all exported symbols have matching methods
+ or are explicitly exported
+
+And the exported symbols are tested
+
+And are documented
+
+see TODOs in lib/*/*d

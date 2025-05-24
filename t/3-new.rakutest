@@ -2,8 +2,6 @@ use Test;
 
 use DateTime::Julian;
 
-plan 4;
-
 # ensure we can use normal DateTime instantiation for its child class
 lives-ok {
     my $d = DateTime::Julian.new(now);
@@ -20,4 +18,6 @@ lives-ok {
 dies-ok {
     my $d = DateTime::Julian.new;
 }, "No valid DateTime new arg entered";
+
+done-testing;
 

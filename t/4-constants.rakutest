@@ -1,0 +1,13 @@
+use Test;
+
+use DateTime::Julian :ALL;
+
+=begin comment
+constant POSIX0         is export = 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
+constant posix0         is export = POSIX0;
+=end comment
+
+is posix0, POSIX0;
+
+done-testing;
+

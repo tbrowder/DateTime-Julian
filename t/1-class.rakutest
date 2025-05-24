@@ -2,8 +2,6 @@ use Test;
 
 use DateTime::Julian;
 
-plan 323;
-
 # New Julian Date reference, from an online site:
 #     https://researchgate.net/publication/316558298
 # 
@@ -119,6 +117,8 @@ for @baum-test-data -> $arr {
         is $jd, $JD, "cmp JD from DateTime.modified-julian-date";
     }
 }
+
+done-testing;
 
 sub modf($x) {
     # splits $x into integer and fractional parts

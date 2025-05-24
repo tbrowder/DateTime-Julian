@@ -1,0 +1,7 @@
+use Test;
+
+use DateTime::Julian;
+
+isa-ok DateTime::Julian, DateTime, "loads ok";
+
+done-testing;
