@@ -1,6 +1,6 @@
 use Test;
 
-use DateTime::Julian;
+use DateTime::Julian :ALL;
 
 # New Julian Date reference, from an online site:
 #     https://researchgate.net/publication/316558298

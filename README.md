@@ -11,13 +11,13 @@ SYNOPSIS
 ========
 
 ```raku
-use DateTime::Julian;
+use DateTime::Julian :ALL; # export all constants
+
 my $jd  = nnnn.nnnn; # Julian Date for some event
 my $mjd = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
-my $d = DateTime::Julian.new(now);
-my $d = DateTime::Julian.now;
+my $d = DateTime::Julian.now; # the default
 ```
 
 DESCRIPTION
