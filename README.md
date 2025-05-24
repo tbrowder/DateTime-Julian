@@ -37,7 +37,7 @@ The following methods and routines were developed from the descriptions of code 
 
 The main purpose of this module is to simplify time and handling for this author who still finds Julian dates to be somewhat mysterious, but absolutely necessary for dealing with astronomy and predicting object positions, especially the Sun and Moon, for local observation and producing astronomical almanacs.
 
-This module plays a major supporting role in this author's Raku module **Astro::Almanac**. Its code will most likely be incorporated into that module and this one abandoned.
+This module plays a major supporting role in this author's Raku module **Astro::Almanac**. Much of this module's will likely be incorporated into that module..
 
 Class DateTime::Julian methods
 ------------------------------
@@ -144,10 +144,12 @@ Difference between Sidereal and Solar hour (the former is shorter).
 
     say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 
-To do
+To Do
 =====
 
-Add calculations (and tests) for Ephemeris Time and Universal Time. (See Ref. 1, section 3.4, p. 41.)
+  * Add calculations (and tests) for Ephemeris Time and Universal Time. (See Ref. 1, section 3.4, p. 41.)
+
+  * Add calculations for local sidereal time
 
 Notes
 =====
