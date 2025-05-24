@@ -37,7 +37,7 @@ The following methods and routines were developed from the descriptions of code 
 
 The main purpose of this module is to simplify time and handling for this author who still finds Julian dates to be somewhat mysterious, but absolutely necessary for dealing with astronomy and predicting object positions, especially the Sun and Moon, for local observation and producing astronomical almanacs.
 
-This module plays a major supporting role in this author's Raku module **Astro::Almanac**.
+This module plays a major supporting role in this author's Raku module **Astro::Almanac**. Its code will most likely be incorporated into that module and this one abandoned.
 
 Class DateTime::Julian methods
 ------------------------------

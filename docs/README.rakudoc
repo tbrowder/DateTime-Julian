@@ -62,7 +62,8 @@ object positions, especially the Sun and Moon, for local observation
 and producing astronomical almanacs.
 
 This module plays a major supporting role in this author's
-Raku module B<Astro::Almanac>.
+Raku module B<Astro::Almanac>. Its code will most likely
+be incorporated into that module and this one abandoned.
 
 =head2 Class DateTime::Julian methods
 
