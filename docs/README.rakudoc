@@ -94,7 +94,10 @@ calculations).
 
 =head2 Exported constants
 
-Several commonly used astronautical constants are exported.
+Several commonly used astronautical constants are exported. See a
+complete list in (CONSTANTS)[CONSTANTS.md] along with each constants'
+individual export tag. You may
+export them all with C<use DateTime::Julian :ALL;>.
 
 =head3 MJD0
 

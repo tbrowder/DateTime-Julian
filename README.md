@@ -63,7 +63,7 @@ Returns time as the number of Julian centuries since epoch J2000.0 (time value u
 Exported constants
 ------------------
 
-Several commonly used astronautical constants are exported.
+Several commonly used astronautical constants are exported. See a complete list in (CONSTANTS)[CONSTANTS.md] along with each constants' individual export tag. You may export them all with `use DateTime::Julian :ALL;`.
 
 ### MJD0
 
