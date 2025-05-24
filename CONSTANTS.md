@@ -15,7 +15,7 @@ I am happy to add new ones if you wish--just file an issue.
     constant GC0 is export(:GC0) = DateTime.new: :1582year, :10month, :15day;
     constant gc0 is export(:gc0) = GC0;
 
-### JD in Gregorian calendar (1970-01-01T00:00:00Z)
+### Julian Date (JD) in the Gregorian calendar (1970-01-01T00:00:00Z)
 
     constant POSIX0 is export(:POSIX0) = 2_440_587.5; 
     constant posix0 is export(:posix0) = POSIX0;
@@ -33,7 +33,7 @@ I am happy to add new ones if you wish--just file an issue.
     constant sec-per-day is export(:sec-per-day) = 86_400;
     constant sec-per-cen is export(:sec-per-cen) = 3_155_760_000;
 
-### a Julian century
+### A Julian century
 
     constant days-per-jcen  is export(:days-per-jcen)  = 36_525; 
     constant days-per-jcent is export(:days-per-jcent) = 36_525;        

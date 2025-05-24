@@ -21,7 +21,7 @@ constant GC0 is export(:GC0) = DateTime.new: :1582year, :10month, :15day;
 constant gc0 is export(:gc0) = GC0;
 =end code
 
-=head3  JD in Gregorian calendar (1970-01-01T00:00:00Z)
+=head3  Julian Date (JD) in the Gregorian calendar (1970-01-01T00:00:00Z)
 =begin code
 constant POSIX0 is export(:POSIX0) = 2_440_587.5; 
 constant posix0 is export(:posix0) = POSIX0;
@@ -44,7 +44,7 @@ constant sec-per-day is export(:sec-per-day) = 86_400;
 constant sec-per-cen is export(:sec-per-cen) = 3_155_760_000; 
 =end code
 
-=head3 a Julian century
+=head3 A Julian century
 =begin code
 constant days-per-jcen  is export(:days-per-jcen)  = 36_525; 
 constant days-per-jcent is export(:days-per-jcent) = 36_525;        
