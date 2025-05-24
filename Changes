@@ -1,6 +1,8 @@
 Revision history for DateTime-Julian
 
 {{$NEXT}}
+
+1.1.2  2025-05-24T17:54:48-05:00
     - Add 3OS tests
     - Update copyright date
     - Tweak docs
