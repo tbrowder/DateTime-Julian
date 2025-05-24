@@ -1,8 +1,10 @@
-
-And the exported symbols are tested
-
 see TODOs in lib/*/*d
+   minisun
+   minimoon
+   local sidereal time
+     (see Calendar module in development)
 
 =DONE Ensure all exported symbols have matching methods
  or are explicitly exported
 =DONE And are documented
+=DONE And the exported symbols are tested

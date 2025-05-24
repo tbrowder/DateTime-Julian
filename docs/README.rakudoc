@@ -14,11 +14,11 @@ It also provides addional time data not provided by the core class.
 =begin code :lang<raku>
 use DateTime::Julian :ALL; # export all constants
 
-my $jd  = nnnn.nnnn; # Julian Date for some event
-my $mjd = nnnn.nnnn; # Modified Julian Date for some event
+my $jd   = nnnn.nnnn; # Julian Date for some event
+my $mjd  = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
-my $d = DateTime::Julian.now; # the default
+my $d    = DateTime::Julian.now; # the default
 =end code
 
 =head1 DESCRIPTION
@@ -61,8 +61,8 @@ but absolutely necessary for dealing with astronomy and predicting
 object positions, especially the Sun and Moon, for local observation
 and producing astronomical almanacs.
 
-This module will play a major supporting role in this author's planned
-Raku module B<Astro::Almanac>;
+This module plays a major supporting role in this author's
+Raku module B<Astro::Almanac>.
 
 =head2 Class DateTime::Julian methods
 
@@ -74,7 +74,15 @@ new(:$julian-date, :$modified-julian-date) {...}
 
 If both arguments are entered, the I<Julian Date> is used. If neither
 is entered, the user is expected to use one of the normal B<DateTime>
-creation methods.
+creation methods. For example:
+
+=begin code
+my $d = DateTime.now;
+# the Julian Date returned is the current JD at the Prime
+# Meridian (0 degrees longitude) based on the current local time
+# (:timezone is ignored)
+say $d.julian-date; # OUTPUT: «2460819.8055783305␤»
+=end code
 
 =head3 method jdcent2000
 
@@ -105,6 +113,7 @@ Returns the Julian Date value for the Modified Julian Date epoch
 of 1858-11-17T00:00:00Z.
 
 =begin code
+use DateTime::Julian :ALL;
 say MJD0;               # OUTPUT: «2400000.5␤»
 # alternatively use aliases:
 say mjd0;               # OUTPUT: «2400000.5␤»
@@ -198,7 +207,7 @@ say solar2sidereal;      # OUTPUT: «1.002737909350795␤»
 
 =head1 To do
 
-Add calculations (and tests) for Ephemeral Time and Universal Time.
+Add calculations (and tests) for Ephemeris Time and Universal Time.
 (See Ref. 1, section 3.4, p. 41.)
 
 =head1 Notes
@@ -217,12 +226,15 @@ Add calculations (and tests) for Ephemeral Time and Universal Time.
 
 5. I<Date Algorithms> (Version 5), Peter Baum, Aesir Research, 2020, L<https://researchgate.net/publication/316558298>.
 
+=head1 See also
+=item Raku module Astro::Utils
+
 =head1 AUTHOR
 
 Tom Browder (tbrowder@acm.org)
 
 =head1 COPYRIGHT AND LICENSE
 
-E<0x00a9> 2021-2022, 2024-2025 Tom Browder
+E<0x00a9> 2021-2022, 2025 Tom Browder
 
 =end pod

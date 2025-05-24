@@ -2,12 +2,17 @@ use Test;
 
 use DateTime::Julian :ALL;
 
-=begin comment
-constant POSIX0         is export = 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
-constant posix0         is export = POSIX0;
-=end comment
-
 is posix0, POSIX0;
+is posix0, 2_440_587.5; # JD in Gregorian calendar (1970-01-01T00:00:00Z)
+is jce, JCE;
+is gc0, GC0;
+is mjd0, MJD0;
+is j2000, J2000;
+is j1900, J1900;
+
+is minutes-per-day, (60*24);               # is export(:minutes-per-day) = 1_440;
+is min-per-day,     (60*24);               # is export(:min-per-day)     = 1_440;
+is sec-per-day,     (60*60*24);            # is export(:sec-per-day) = 86_400;
+is sec-per-cen,     (60*60*24*365.25*100); # is export(:sec-per-cen) = 3_155_760_000
 
 done-testing;
-

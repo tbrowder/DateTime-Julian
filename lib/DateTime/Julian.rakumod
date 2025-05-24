@@ -21,13 +21,13 @@ constant MJD0           is export(:MJD0) = 2_400_000.5;
 constant mjd0           is export(:mjd0) = MJD0;
 
 constant minutes-per-day is export(:minutes-per-day) = 1_440;
-constant min-per-day     is export(:min-per-day) = 1_440;
+constant min-per-day     is export(:min-per-day)     = 1_440;
 
 constant sec-per-day    is export(:sec-per-day) = 86_400;
 constant sec-per-cen    is export(:sec-per-cen) = 3_155_760_000; 
 
 # a Julian century
-constant days-per-jcen  is export(:days-per-jcen)   = 36_525;        
+constant days-per-jcen  is export(:days-per-jcen)  = 36_525; 
 constant days-per-jcent is export(:days-per-jcent) = 36_525;        
 constant days-per-cen   is export(:days-per-cen)   = 36_525;        
 
@@ -105,10 +105,11 @@ method gmst(--> Real) {
     (pi2 / sec-per-day) * (GMST % sec-per-day);      # radians
 }
 
-method lst(Real \lon,             # decimal degrees
-          :$east-positive = True, # some using programs may have west longitudes positive
-                                  # (e.g., Meeus, Astro::Montenbruck)
-          --> Real) {
+method lst(
+    Real \lon,             # decimal degrees
+   :$east-positive = True, # some using programs may have west longitudes positive
+                           # (e.g., Meeus, Astro::Montenbruck)
+   --> Real) {
     # calculate Local Sidereal Time (LST)
     # see Montenbruck, p. 41
 # TODO

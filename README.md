@@ -13,11 +13,11 @@ SYNOPSIS
 ```raku
 use DateTime::Julian :ALL; # export all constants
 
-my $jd  = nnnn.nnnn; # Julian Date for some event
-my $mjd = nnnn.nnnn; # Modified Julian Date for some event
+my $jd   = nnnn.nnnn; # Julian Date for some event
+my $mjd  = nnnn.nnnn; # Modified Julian Date for some event
 my $utc  = DateTime::Julian.new: :julian-date($jd);
 my $utc2 = DateTime::Julian.new: :modified-julian-date($mjd);
-my $d = DateTime::Julian.now; # the default
+my $d    = DateTime::Julian.now; # the default
 ```
 
 DESCRIPTION
@@ -37,7 +37,7 @@ The following methods and routines were developed from the descriptions of code 
 
 The main purpose of this module is to simplify time and handling for this author who still finds Julian dates to be somewhat mysterious, but absolutely necessary for dealing with astronomy and predicting object positions, especially the Sun and Moon, for local observation and producing astronomical almanacs.
 
-This module will play a major supporting role in this author's planned Raku module **Astro::Almanac**;
+This module plays a major supporting role in this author's Raku module **Astro::Almanac**.
 
 Class DateTime::Julian methods
 ------------------------------
@@ -46,7 +46,13 @@ Class DateTime::Julian methods
 
     new(:$julian-date, :$modified-julian-date) {...}
 
-If both arguments are entered, the *Julian Date* is used. If neither is entered, the user is expected to use one of the normal **DateTime** creation methods.
+If both arguments are entered, the *Julian Date* is used. If neither is entered, the user is expected to use one of the normal **DateTime** creation methods. For example:
+
+    my $d = DateTime.now;
+    # the Julian Date returned is the current JD at the Prime
+    # Meridian (0 degrees longitude) based on the current local time
+    # (:timezone is ignored)
+    say $d.julian-date; # OUTPUT: «2460819.8055783305␤»
 
 ### method jdcent2000
 
@@ -69,6 +75,7 @@ Several commonly used astronautical constants are exported. See a complete list 
 
 Returns the Julian Date value for the Modified Julian Date epoch of 1858-11-17T00:00:00Z.
 
+    use DateTime::Julian :ALL;
     say MJD0;               # OUTPUT: «2400000.5␤»
     # alternatively use aliases:
     say mjd0;               # OUTPUT: «2400000.5␤»
@@ -140,7 +147,7 @@ Difference between Sidereal and Solar hour (the former is shorter).
 To do
 =====
 
-Add calculations (and tests) for Ephemeral Time and Universal Time. (See Ref. 1, section 3.4, p. 41.)
+Add calculations (and tests) for Ephemeris Time and Universal Time. (See Ref. 1, section 3.4, p. 41.)
 
 Notes
 =====
@@ -160,6 +167,11 @@ References
 
 5. *Date Algorithms* (Version 5), Peter Baum, Aesir Research, 2020, [https://researchgate.net/publication/316558298](https://researchgate.net/publication/316558298).
 
+See also
+========
+
+  * Raku module Astro::Utils
+
 AUTHOR
 ======
 
@@ -168,5 +180,5 @@ Tom Browder (tbrowder@acm.org)
 COPYRIGHT AND LICENSE
 =====================
 
-© 2021-2022, 2024-2025 Tom Browder
+© 2021-2022, 2025 Tom Browder
 
